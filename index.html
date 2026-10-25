@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeSaves - Shared Financial & Cashflow Tracker</title>
+    <!-- Tailwind CSS Stable CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        outfit: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        slate: {
+                            850: '#151e2e',
+                            950: '#020617',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom Favicon SVG -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%23059669'/><path d='M30 50 L45 65 L70 35' stroke='white' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .font-outfit { font-family: 'Outfit', sans-serif; }
+        button, select, input, label { cursor: pointer; }
+
+        /* Smooth Theme Transition */
+        html, body, div, header, footer, input, select, button, table, th, td {
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Hilangkan kalender icon bawaan browser pada input date khusus modal */
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            opacity: 0.6;
+            transition: 0.2s;
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator:hover {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body id="appBody" class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col antialiased">
+
+    <!-- Header / Navbar -->
+    <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <!-- Logo & Title -->
+            <div class="flex items-center space-x-3 overflow-hidden">
+                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-md shadow-emerald-600/20 shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 sm:w-6 sm:h-6 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="20" height="14" x="2" y="5" rx="2"/>
+                        <line x1="2" x2="22" y1="10" y2="10"/>
+                    </svg>
+                </div>
+                <div class="truncate">
+                    <h1 class="font-outfit text-base sm:text-xl font-bold tracking-tight leading-tight text-slate-900 dark:text-white">WeSaves</h1>
+                    <p class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 truncate">Shared Financial Tracker</p>
+                </div>
+            </div>
+
+            <!-- Action Navbar -->
+            <div class="flex items-center space-x-2 shrink-0">
+                <!-- Tombol Sinkronisasi Google Drive -->
+                <button type="button" onclick="openSyncModal()" title="Sinkronisasi Google Drive" class="inline-flex items-center justify-center space-x-2 text-xs font-medium bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-400 dark:hover:bg-emerald-900/50 w-9 h-9 sm:w-auto sm:px-3.5 sm:py-2 rounded-xl border border-emerald-200 dark:border-emerald-800">
+                    <i class="fa-brands fa-google-drive text-sm sm:text-base pointer-events-none"></i>
+                    <span class="hidden sm:inline pointer-events-none">Google Sheet</span>
+                </button>
+
+                <!-- Tombol Ganti Mode (Terang / Gelap) -->
+                <button type="button" id="themeToggleBtn" onclick="toggleTheme()" title="Ganti Tema" class="w-9 h-9 sm:w-auto sm:px-3.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-medium flex items-center justify-center sm:space-x-2 hover:bg-slate-50 dark:hover:bg-slate-700">
+                    <i id="themeIcon" class="fa-solid fa-moon text-sm sm:text-base pointer-events-none"></i>
+                    <span id="themeText" class="hidden sm:inline pointer-events-none">Mode Gelap</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        
+        <!-- Summary Cards Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Total Saldo -->
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-outfit">Total Saldo Bersih</p>
+                        <h3 id="totalBalance" class="text-3xl font-bold font-outfit text-slate-900 dark:text-white mt-2">Rp 0</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                        <i class="fa-solid fa-vault text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 flex items-center text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                    <i class="fa-solid fa-arrow-trend-up mr-1.5"></i> Gabungan SeaBank & BCA
+                </div>
+            </div>
+
+            <!-- Total Pemasukan -->
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-outfit">Total Pemasukan</p>
+                        <h3 id="totalIncome" class="text-3xl font-bold font-outfit text-emerald-600 dark:text-emerald-400 mt-2">Rp 0</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+                        <i class="fa-solid fa-arrow-down-long text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-slate-500 dark:text-slate-400">Akumulasi seluruh pemasukan</div>
+            </div>
+
+            <!-- Total Pengeluaran -->
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-rose-600 dark:text-rose-400 font-outfit">Total Pengeluaran</p>
+                        <h3 id="totalExpense" class="text-3xl font-bold font-outfit text-rose-600 dark:text-rose-400 mt-2">Rp 0</h3>
+                    </div>
+                    <div class="w-12 h-12 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 flex items-center justify-center">
+                        <i class="fa-solid fa-arrow-up-long text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-4 text-xs text-slate-500 dark:text-slate-400">Akumulasi seluruh pengeluaran</div>
+            </div>
+        </div>
+
+        <!-- Grafik Garis (Line Chart Trend Cashflow) -->
+        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <h2 class="font-outfit text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center">
+                    <i class="fa-solid fa-chart-line text-emerald-600 mr-2"></i> Trend Grafik Cashflow
+                </h2>
+                <div class="flex items-center space-x-4 text-xs">
+                    <span class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span><span class="text-slate-600 dark:text-slate-300">Pemasukan</span></span>
+                    <span class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span><span class="text-slate-600 dark:text-slate-300">Pengeluaran</span></span>
+                </div>
+            </div>
+            
+            <!-- SVG Line Chart Container -->
+            <div class="w-full h-56 relative flex items-center justify-center pt-4">
+                <svg id="trendLineChart" class="w-full h-full overflow-visible" viewBox="0 0 600 200" preserveAspectRatio="none">
+                    <line x1="0" y1="0" x2="600" y2="0" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
+                    <line x1="0" y1="50" x2="600" y2="50" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
+                    <line x1="0" y1="100" x2="600" y2="100" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
+                    <line x1="0" y1="150" x2="600" y2="150" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
+                    <line x1="0" y1="200" x2="600" y2="200" stroke="currentColor" class="text-slate-200 dark:text-slate-800"/>
+                    
+                    <polyline id="incomePolyline" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points=""/>
+                    <polyline id="expensePolyline" fill="none" stroke="#f43f5e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points=""/>
+                </svg>
+            </div>
+            <p id="chartStatusText" class="text-center text-xs text-slate-400 dark:text-slate-500 italic mt-2" style="display: none;">Belum ada data transaksi untuk menampilkan garis tren.</p>
+        </div>
+
+        <!-- Action Grid & Form Panel -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- Input Form Transaksi (1 Kolom) -->
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm lg:col-span-1 h-fit">
+                <h2 class="font-outfit text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center">
+                    <i class="fa-solid fa-circle-plus text-emerald-600 mr-2"></i> Tambah Catatan
+                </h2>
+                <form id="transactionForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                    <!-- Pilih Penabung -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Nama Penabung</label>
+                        <input type="text" id="txOwner" required placeholder="Contoh: Kamu / Pasangan" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+
+                    <!-- Jenis Transaksi -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Jenis Transaksi</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button type="button" id="btnIncome" onclick="setTxType('INCOME')" class="py-2.5 px-4 text-xs font-semibold rounded-xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-plus pointer-events-none"></i> <span class="pointer-events-none">Pemasukan</span>
+                            </button>
+                            <button type="button" id="btnExpense" onclick="setTxType('EXPENSE')" class="py-2.5 px-4 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-600 dark:text-slate-400 flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-minus pointer-events-none"></i> <span class="pointer-events-none">Pengeluaran</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Pilihan Tanggal Kustom Interaktif -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Hari, Tanggal & Tahun Transaksi</label>
+                        <button type="button" onclick="openDateModal()" class="w-full text-left text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 flex items-center justify-between">
+                            <span id="selectedDateDisplay" class="pointer-events-none">Pilih Tanggal...</span>
+                            <i class="fa-solid fa-calendar-days text-emerald-600 pointer-events-none"></i>
+                        </button>
+                        <input type="hidden" id="txDateValue" required>
+                    </div>
+
+                    <!-- Tempat Menabung (SeaBank / BCA) -->
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Akun / Rekening Nabung</label>
+                        <select id="txBank" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="SeaBank">SeaBank</option>
+                            <option value="BCA">BCA (Bank Central Asia)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Keterangan / Judul</label>
+                        <input type="text" id="txDesc" required placeholder="Contoh: Tabungan Bersama / Belanja" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Nominal (Rp)</label>
+                        <input type="text" id="txAmount" required placeholder="100.000" oninput="formatRupiahInput(this)" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-outfit font-semibold">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Kategori</label>
+                        <select id="txCategory" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <option value="Nabung / Investasi">Nabung / Investasi</option>
+                            <option value="Gaji / Pendapatan Bersama">Gaji / Pendapatan Bersama</option>
+                            <option value="Makanan & Minuman">Makanan & Minuman</option>
+                            <option value="Transportasi">Transportasi</option>
+                            <option value="Tagihan & Utilitas">Tagihan & Utilitas</option>
+                            <option value="Hiburan & Lainnya">Hiburan & Lainnya</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition shadow-md shadow-emerald-600/20 text-sm">
+                        Simpan Transaksi
+                    </button>
+                </form>
+            </div>
+
+            <!-- Tabel Riwayat Transaksi (2 Kolom) -->
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm lg:col-span-2 flex flex-col">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="font-outfit text-lg font-bold text-slate-900 dark:text-white flex items-center">
+                        <i class="fa-solid fa-clock-rotate-left mr-2 text-slate-500 dark:text-slate-400"></i> Riwayat Cashflow Bersama
+                    </h2>
+                    <span id="txCount" class="text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400">0 Transaksi</span>
+                </div>
+
+                <div class="overflow-x-auto flex-grow">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-200 dark:border-slate-800 text-xs font-outfit uppercase tracking-wider text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50">
+                                <th class="py-3 px-4 font-semibold">Penabung & Keterangan</th>
+                                <th class="py-3 px-4 font-semibold">Akun</th>
+                                <th class="py-3 px-4 font-semibold">Jenis</th>
+                                <th class="py-3 px-4 font-semibold text-right">Nominal</th>
+                                <th class="py-3 px-4 font-semibold text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionTableBody" class="divide-y divide-slate-200 dark:divide-slate-800 text-sm text-slate-700 dark:text-slate-300">
+                            <tr>
+                                <td colspan="5" class="text-center py-8 text-slate-400 dark:text-slate-500">Belum ada catatan keuangan bersama. Yuk mulai menabung!</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal Pilih Tanggal -->
+    <div id="dateModal" style="display: none;" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-outfit font-bold text-base flex items-center">
+                    <i class="fa-solid fa-calendar-days text-emerald-600 mr-2"></i> Pilih Tanggal Transaksi
+                </h3>
+                <button type="button" onclick="closeDateModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg pointer-events-none"></i></button>
+            </div>
+            <div>
+                <input type="date" id="modalDateInput" class="w-full text-base px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold" style="color-scheme: light dark;">
+            </div>
+            <div class="flex space-x-3 pt-2">
+                <button type="button" onclick="confirmDateSelection()" class="flex-grow bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl text-sm shadow-md shadow-emerald-600/20">OK / Pilih</button>
+                <button type="button" onclick="closeDateModal()" class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfigurasi Google Sheet -->
+    <div id="syncModal" style="display: none;" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-outfit font-bold text-lg flex items-center">
+                    <i class="fa-brands fa-google-drive text-emerald-600 mr-2"></i> Integrasi Google Sheets
+                </h3>
+                <button type="button" onclick="closeSyncModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg pointer-events-none"></i></button>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                Masukkan URL Web App dari <strong>Google Apps Script</strong> agar catatan keuangan kalian berdua otomatis tersimpan di Google Sheet.
+            </p>
+            <div>
+                <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Google Apps Script Web App URL</label>
+                <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <div class="flex space-x-3 pt-2">
+                <button type="button" onclick="saveScriptUrl()" class="flex-grow bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl text-sm">Simpan & Hubungkan</button>
+                <button type="button" onclick="closeSyncModal()" class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-auto py-6 text-center text-xs text-slate-500 dark:text-slate-400 border-t border-slate-200 dark:border-slate-800 space-y-1">
+        <p>WeSaves &bull; Shared Financial Tracker for Couples</p>
+        <p class="font-medium text-emerald-600 dark:text-emerald-400">Created by Muhammad Faari Akbar</p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        let currentType = 'INCOME';
+        let transactions = JSON.parse(localStorage.getItem('wesaves_tx')) || [];
+        let googleScriptUrl = localStorage.getItem('wesaves_script_url') || '';
+        let currentTheme = localStorage.getItem('wesaves_theme') || 'light';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            applyTheme(currentTheme);
+            
+            const todayStr = new Date().toISOString().split('T')[0];
+            setFormattedDateValue(todayStr);
+
+            renderTransactions();
+            if (googleScriptUrl) {
+                document.getElementById('scriptUrlInput').value = googleScriptUrl;
+            }
+        });
+
+        function toggleTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            applyTheme(currentTheme);
+            localStorage.setItem('wesaves_theme', currentTheme);
+        }
+
+        function applyTheme(theme) {
+            const htmlEl = document.documentElement;
+            const themeIcon = document.getElementById('themeIcon');
+            const themeText = document.getElementById('themeText');
+
+            if (theme === 'dark') {
+                htmlEl.classList.remove('light');
+                htmlEl.classList.add('dark');
+                themeIcon.className = 'fa-solid fa-sun text-amber-400 pointer-events-none';
+                themeText.innerText = 'Mode Terang';
+            } else {
+                htmlEl.classList.remove('dark');
+                htmlEl.classList.add('light');
+                themeIcon.className = 'fa-solid fa-moon text-slate-700 pointer-events-none';
+                themeText.innerText = 'Mode Gelap';
+            }
+        }
+
+        function setTxType(type) {
+            currentType = type;
+            const btnIncome = document.getElementById('btnIncome');
+            const btnExpense = document.getElementById('btnExpense');
+
+            if (type === 'INCOME') {
+                btnIncome.className = "py-2.5 px-4 text-xs font-semibold rounded-xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 flex items-center justify-center space-x-2";
+                btnExpense.className = "py-2.5 px-4 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-600 dark:text-slate-400 flex items-center justify-center space-x-2";
+            } else {
+                btnExpense.className = "py-2.5 px-4 text-xs font-semibold rounded-xl border border-rose-500 bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 flex items-center justify-center space-x-2";
+                btnIncome.className = "py-2.5 px-4 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-600 dark:text-slate-400 flex items-center justify-center space-x-2";
+            }
+        }
+
+        function formatRupiahInput(input) {
+            let value = input.value.replace(/[^,\d]/g, '').toString();
+            let split = value.split(',');
+            let sisa = split[0].length % 3;
+            let rupiah = split[0].substr(0, sisa);
+            let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+            input.value = rupiah;
+        }
+
+        function openDateModal() {
+            const currentVal = document.getElementById('txDateValue').value || new Date().toISOString().split('T')[0];
+            document.getElementById('modalDateInput').value = currentVal;
+            document.getElementById('dateModal').style.display = 'flex';
+        }
+
+        function closeDateModal() {
+            document.getElementById('dateModal').style.display = 'none';
+        }
+
+        function confirmDateSelection() {
+            const val = document.getElementById('modalDateInput').value;
+            if (val) {
+                setFormattedDateValue(val);
+            }
+            closeDateModal();
+        }
+
+        function setFormattedDateValue(dateString) {
+            document.getElementById('txDateValue').value = dateString;
+            const dateObj = new Date(dateString + 'T00:00:00');
+            const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('selectedDateDisplay').innerText = dateObj.toLocaleDateString('id-ID', options);
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const owner = document.getElementById('txOwner').value.trim();
+            const inputDate = document.getElementById('txDateValue').value;
+            const bank = document.getElementById('txBank').value;
+            const desc = document.getElementById('txDesc').value.trim();
+            
+            const rawAmount = document.getElementById('txAmount').value.replace(/\./g, '');
+            const amount = parseFloat(rawAmount);
+            if(isNaN(amount) || amount <= 0) return;
+
+            const category = document.getElementById('txCategory').value;
+
+            const dateObj = new Date(inputDate + 'T00:00:00');
+            const optionsDate = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
+            const formattedDate = dateObj.toLocaleDateString('id-ID', optionsDate);
+
+            const now = new Date();
+            const formattedTime = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
+            
+            const dateTimeString = `${formattedDate}, ${formattedTime} WIB`;
+
+            const newTx = {
+                id: Date.now(),
+                rawDate: inputDate,
+                dateTime: dateTimeString,
+                owner: owner,
+                bank: bank,
+                description: desc,
+                amount: amount,
+                category: category,
+                type: currentType
+            };
+
+            transactions.unshift(newTx);
+            saveAndRefresh();
+            
+            if (googleScriptUrl) {
+                syncToGoogleSheet(newTx);
+            }
+
+            document.getElementById('txDesc').value = '';
+            document.getElementById('txAmount').value = '';
+            setFormattedDateValue(new Date().toISOString().split('T')[0]);
+            setTxType('INCOME');
+        }
+
+        function deleteTransaction(id) {
+            if(confirm("Apakah kamu yakin ingin menghapus catatan ini?")) {
+                transactions = transactions.filter(t => t.id !== id);
+                saveAndRefresh();
+            }
+        }
+
+        function saveAndRefresh() {
+            localStorage.setItem('wesaves_tx', JSON.stringify(transactions));
+            renderTransactions();
+        }
+
+        function renderTransactions() {
+            const tbody = document.getElementById('transactionTableBody');
+            const txCount = document.getElementById('txCount');
+            const elTotalBalance = document.getElementById('totalBalance');
+            const elTotalIncome = document.getElementById('totalIncome');
+            const elTotalExpense = document.getElementById('totalExpense');
+
+            txCount.innerText = `${transactions.length} Transaksi`;
+
+            let income = 0;
+            let expense = 0;
+
+            if (transactions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400 dark:text-slate-500">Belum ada catatan keuangan bersama. Yuk mulai menabung!</td></tr>`;
+            } else {
+                tbody.innerHTML = '';
+                transactions.forEach(t => {
+                    if (t.type === 'INCOME') income += t.amount;
+                    else expense += t.amount;
+
+                    const tr = document.createElement('tr');
+                    tr.className = "hover:bg-slate-50 dark:hover:bg-slate-800/50";
+                    tr.innerHTML = `
+                        <td class="py-3 px-4 font-medium text-slate-900 dark:text-white">
+                            <div class="flex items-center space-x-2">
+                                <span class="px-2 py-0.5 rounded-md text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400">${t.owner}</span>
+                                <span>${t.description}</span>
+                            </div>
+                            <span class="text-xs text-slate-400 dark:text-slate-500">${t.dateTime || t.rawDate} &bull; ${t.category}</span>
+                        </td>
+                        <td class="py-3 px-4 text-xs text-slate-600 dark:text-slate-300">
+                            <span class="px-2 py-1 rounded-md font-medium border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">${t.bank}</span>
+                        </td>
+                        <td class="py-3 px-4">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${t.type === 'INCOME' ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400'}">
+                                ${t.type === 'INCOME' ? 'Pemasukan' : 'Pengeluaran'}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-right font-outfit font-semibold ${t.type === 'INCOME' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">
+                            ${t.type === 'INCOME' ? '+' : '-'} Rp ${(t.amount || 0).toLocaleString('id-ID')}
+                        </td>
+                        <td class="py-3 px-4 text-center">
+                            <button type="button" onclick="deleteTransaction(${t.id})" class="text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 p-1"><i class="fa-solid fa-trash-can pointer-events-none"></i></button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            let balance = income - expense;
+            elTotalBalance.innerText = `Rp ${balance.toLocaleString('id-ID')}`;
+            elTotalIncome.innerText = `Rp ${income.toLocaleString('id-ID')}`;
+            elTotalExpense.innerText = `Rp ${expense.toLocaleString('id-ID')}`;
+
+            renderLineChart();
+        }
+
+        function renderLineChart() {
+            const incomePolyline = document.getElementById('incomePolyline');
+            const expensePolyline = document.getElementById('expensePolyline');
+            const chartStatusText = document.getElementById('chartStatusText');
+
+            if (transactions.length === 0) {
+                incomePolyline.setAttribute('points', '');
+                expensePolyline.setAttribute('points', '');
+                chartStatusText.style.display = 'block';
+                return;
+            }
+
+            chartStatusText.style.display = 'none';
+
+            // 1. Group data by date to prevent multiple points on the same X-axis
+            let groupedByDate = {};
+            transactions.forEach(t => {
+                let d = t.rawDate || new Date().toISOString().split('T')[0];
+                if (!groupedByDate[d]) {
+                    groupedByDate[d] = { date: d, income: 0, expense: 0 };
+                }
+                if (t.type === 'INCOME') {
+                    groupedByDate[d].income += t.amount;
+                } else {
+                    groupedByDate[d].expense += t.amount;
+                }
+            });
+
+            // 2. Sort the grouped data by date ascending
+            let sortedDates = Object.values(groupedByDate).sort((a, b) => new Date(a.date) - new Date(b.date));
+            
+            // 3. Find Max Value for Y-Axis scaling
+            let maxVal = 1000;
+            sortedDates.forEach(d => {
+                if (d.income > maxVal) maxVal = d.income;
+                if (d.expense > maxVal) maxVal = d.expense;
+            });
+            maxVal = maxVal * 1.1; // Add 10% padding on top
+
+            let incomePoints = [];
+            let expensePoints = [];
+            let count = sortedDates.length;
+
+            // 4. Generate SVG Points
+            if (count === 1) {
+                // If only 1 day of data exists, draw a horizontal line across the chart
+                let d = sortedDates[0];
+                let yInc = 190 - (d.income / maxVal) * 170;
+                let yExp = 190 - (d.expense / maxVal) * 170;
+                
+                incomePoints.push(`0,${yInc} 600,${yInc}`);
+                expensePoints.push(`0,${yExp} 600,${yExp}`);
+            } else {
+                // Connect points based on available dates
+                sortedDates.forEach((d, index) => {
+                    let x = (index / (count - 1)) * 560 + 20; // Scale X from 20 to 580
+                    let yInc = 190 - (d.income / maxVal) * 170;
+                    let yExp = 190 - (d.expense / maxVal) * 170;
+
+                    incomePoints.push(`${x},${yInc}`);
+                    expensePoints.push(`${x},${yExp}`);
+                });
+            }
+
+            // 5. Render Polylines
+            incomePolyline.setAttribute('points', incomePoints.join(' '));
+            expensePolyline.setAttribute('points', expensePoints.join(' '));
+        }
+
+        function openSyncModal() {
+            document.getElementById('syncModal').style.display = 'flex';
+        }
+
+        function closeSyncModal() {
+            document.getElementById('syncModal').style.display = 'none';
+        }
+
+        function saveScriptUrl() {
+            const url = document.getElementById('scriptUrlInput').value.trim();
+            googleScriptUrl = url;
+            localStorage.setItem('wesaves_script_url', url);
+            closeSyncModal();
+            alert('URL Google Apps Script berhasil disimpan!');
+        }
+
+        function syncToGoogleSheet(tx) {
+            if(!googleScriptUrl) return;
+            fetch(googleScriptUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(tx)
+            }).then(() => {
+                console.log('Disinkronkan ke Google Sheet');
+            }).catch(err => {
+                console.error('Gagal sinkronisasi:', err);
+            });
+        }
+    </script>
+</body>
+</html>

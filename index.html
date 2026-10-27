@@ -10,7 +10,6 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="WeSaves">
 
-    <!-- Tailwind CSS & Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], outfit: ['Outfit', 'sans-serif'] } } } }
@@ -18,7 +17,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- FAVICON (LOGO WEB) KEMBALI NORMAL -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%23059669'/><path d='M30 50 L45 65 L70 35' stroke='white' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
 
     <style>
@@ -92,14 +90,13 @@
                 <p id="goalRemainingDisplay" class="text-xs text-slate-500 dark:text-slate-400 mt-3 font-medium">Tetapkan target tabunganmu.</p>
             </div>
 
-            <!-- KONTRIBUSI (Menampilkan Langsung Faari & Michelle) -->
+            <!-- KONTRIBUSI -->
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden flex flex-col justify-center">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="font-outfit text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center"><i class="fa-solid fa-hand-holding-heart text-rose-500 mr-2"></i> Kontribusi Tabungan</h2>
                     <span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md font-medium">Sesuai Filter</span>
                 </div>
-                <!-- Area ini akan diisi dengan Kartu Faari dan Michelle oleh JavaScript -->
-                <div id="contributionContainer" class="flex-grow flex flex-col justify-center"></div>
+                <div id="contributionContainer" class="flex-grow flex flex-col justify-center w-full"></div>
             </div>
         </div>
 
@@ -165,8 +162,8 @@
                         <line x1="0" y1="100" x2="600" y2="100" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
                         <line x1="0" y1="150" x2="600" y2="150" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
                         <line x1="0" y1="200" x2="600" y2="200" stroke="currentColor" class="text-slate-200 dark:text-slate-800"/>
-                        <polyline id="incomePolyline" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0,200 600,200"/>
-                        <polyline id="expensePolyline" fill="none" stroke="#f43f5e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0,200 600,200"/>
+                        <polyline id="incomePolyline" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points=""/>
+                        <polyline id="expensePolyline" fill="none" stroke="#f43f5e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points=""/>
                     </svg>
                 </div>
             </div>
@@ -202,7 +199,6 @@
 
         <!-- FORM & TABLE GRID -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
             <!-- FORM INPUT KIRI -->
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm lg:col-span-1 h-fit" id="formPanel">
                 <div class="flex items-center justify-between mb-4">
@@ -255,7 +251,6 @@
 
             <!-- TABEL KANAN -->
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm lg:col-span-2 flex flex-col">
-                
                 <div class="mb-4">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 flex items-center"><i class="fa-solid fa-wallet mr-1.5 text-blue-500"></i> Saldo Per Dompet</h3>
                     <div id="walletCardsContainer" class="flex overflow-x-auto space-x-3 pb-2 scroll-smooth hide-scrollbar"></div>
@@ -397,7 +392,7 @@
 
     <!-- JAVASCRIPT UTAMA -->
     <script>
-        // DATA DEFAULT DITANAM PERMANEN
+        // Data Bawaan Disuntikkan Supaya Tidak Hilang!
         const defaultData = [
             {id: 1792974158595, rawDate: "2026-10-05", dateTime: "Senin, 5 Okt 2026, 07:22 WIB", owner: "Faari", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 150000, category: "Nabung / Investasi", type: "INCOME"},
             {id: 1792974136146, rawDate: "2026-09-25", dateTime: "Jumat, 25 Sep 2026, 07:22 WIB", owner: "Michelle", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 150000, category: "Nabung / Investasi", type: "INCOME"},
@@ -424,12 +419,25 @@
         let categoryList = JSON.parse(localStorage.getItem('wesaves_categories')) || ['Nabung / Investasi', 'Gaji / Pendapatan Bersama', 'Makanan & Minuman', 'Transportasi', 'Tagihan & Utilitas', 'Hiburan & Lainnya'];
         let currentType = 'INCOME';
         let googleScriptUrl = localStorage.getItem('wesaves_script_url') || '';
-        let currentTheme = localStorage.getItem('wesaves_theme') || 'dark'; // Dark mode 
+        let currentTheme = localStorage.getItem('wesaves_theme') || 'dark'; // Mode dark
         let savingsGoal = parseFloat(localStorage.getItem('wesaves_goal')) || 0;
         let monthlyBudget = parseFloat(localStorage.getItem('wesaves_budget')) || 0;
         let editingId = null;
         let filterMonth = 'all', filterOwner = 'all', searchQuery = '', currentPage = 1;
         const rowsPerPage = 10;
+
+        const categoryUI = {
+            "Nabung / Investasi": { color: "#10b981", icon: "fa-piggy-bank" },
+            "Gaji / Pendapatan Bersama": { color: "#14b8a6", icon: "fa-sack-dollar" },
+            "Makanan & Minuman": { color: "#f59e0b", icon: "fa-burger" },
+            "Transportasi": { color: "#3b82f6", icon: "fa-car" },
+            "Tagihan & Utilitas": { color: "#ef4444", icon: "fa-file-invoice-dollar" },
+            "Hiburan & Lainnya": { color: "#8b5cf6", icon: "fa-gamepad" },
+            "Transfer Antar Rekening": { color: "#64748b", icon: "fa-money-bill-transfer" }
+        };
+        const defaultColors = ["#ec4899", "#f97316", "#06b6d4", "#84cc16"];
+        function getCatUI(catName, index = 0) { return categoryUI[catName] || { color: defaultColors[index % defaultColors.length], icon: "fa-tag" }; }
+        function formatShortNumber(num) { if (num >= 1000000) return (num / 1000000).toFixed(1) + ' Jt'; if (num >= 1000) return (num / 1000).toFixed(0) + ' Rb'; return num.toString(); }
 
         document.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('wesaves_unlocked') === 'true') document.getElementById('loginScreen').style.display = 'none';
@@ -590,12 +598,6 @@
             });
         }
 
-        function formatShortNumber(num) {
-            if (num >= 1000000) return (num / 1000000).toFixed(1) + ' Jt';
-            if (num >= 1000) return (num / 1000).toFixed(0) + ' Rb';
-            return num.toString();
-        }
-
         function renderTransactions() {
             const ft = getFilteredData(true);
             document.getElementById('txCount').innerText = `${ft.length} Data`;
@@ -611,7 +613,7 @@
             const tbody = document.getElementById('transactionTableBody');
             if(pt.length===0) tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400">Tidak ada data.</td></tr>`;
             else tbody.innerHTML = pt.map(t => {
-                let bg, am, ic, bn;
+                let ui = getCatUI(t.category); let bg, am, ic, bn;
                 if(t.type==='INCOME'){ bg='emerald'; am=`+ Rp ${t.amount.toLocaleString('id-ID')}`; ic='Masuk'; bn=t.bank; }
                 else if(t.type==='EXPENSE'){ bg='rose'; am=`- Rp ${t.amount.toLocaleString('id-ID')}`; ic='Keluar'; bn=t.bank; }
                 else { bg='blue'; am=`⇄ Rp ${t.amount.toLocaleString('id-ID')}`; ic='Mutasi'; bn=`${t.bank} <i class="fa-solid fa-arrow-right text-[10px] mx-1"></i> ${t.targetBank}`; }
@@ -622,7 +624,7 @@
                             <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 w-fit">${t.owner}</span>
                             <span>${t.description}</span>
                         </div>
-                        <span class="text-[11px] text-slate-400 block">${t.category} &bull; ${t.dateTime}</span>
+                        <span class="text-[11px] text-slate-400 block"><i class="fa-solid ${ui.icon} mr-1"></i>${t.category} &bull; ${t.dateTime}</span>
                     </td>
                     <td class="py-4 px-4"><span class="px-2 py-1 rounded border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-xs text-slate-600 dark:text-slate-300 whitespace-nowrap">${bn}</span></td>
                     <td class="py-4 px-4"><span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-${bg}-50 dark:bg-${bg}-900/30 text-${bg}-600 dark:text-${bg}-400">${ic}</span></td>
@@ -646,13 +648,19 @@
             updateBudgetUI(ce);
 
             renderWalletBalances();
+            
+            // FUNGSI RENDER KONTRIBUSI (Menampilkan Langsung Pemisah Tabungan Faari & Michelle)
             renderContribution(ft); 
 
-            // RENDER GRAFIK
+            // FUNGSI RENDER GRAFIK GARIS (TETAP MUNCUL WALAUPUN CUMA 1 DATA)
             renderLineChart(ft); 
+            
             renderDonutChart(ft);
         }
 
+        // ==========================================
+        // FUNGSI KARTU SALDO DOMPET
+        // ==========================================
         function renderWalletBalances() {
             let wallets = {}; bankList.forEach(b => wallets[b] = 0);
             transactions.forEach(t => {
@@ -664,6 +672,7 @@
             });
             const wc = document.getElementById('walletCardsContainer');
             if(Object.keys(wallets).length === 0) { wc.innerHTML = ''; return; }
+            
             const bgs = ['bg-blue-50', 'bg-emerald-50', 'bg-purple-50', 'bg-amber-50', 'bg-rose-50'];
             const txt = ['text-blue-600', 'text-emerald-600', 'text-purple-600', 'text-amber-600', 'text-rose-600'];
             const dbg = ['dark:bg-blue-900/30', 'dark:bg-emerald-900/30', 'dark:bg-purple-900/30', 'dark:bg-amber-900/30', 'dark:bg-rose-900/30'];
@@ -674,6 +683,99 @@
                     <span class="font-outfit font-bold text-slate-900 dark:text-white text-sm sm:text-base whitespace-nowrap">Rp ${wallets[b].toLocaleString('id-ID')}</span>
                 </div>`;
             }).join('');
+        }
+
+        // ==========================================
+        // FUNGSI KONTRIBUSI TABUNGAN: PEMISAH TOTAL UANG (MUNCUL DI KOTAK KONTRIBUSI)
+        // ==========================================
+        function renderContribution(filtered) {
+            let ow = {};
+            // Hitung berdasarkan data yang difilter
+            filtered.forEach(t => {
+                if (t.type === 'TRANSFER') return;
+                let nm = t.owner.trim();
+                let key = nm.charAt(0).toUpperCase() + nm.slice(1).toLowerCase();
+                
+                if (!ow[key]) ow[key] = 0;
+                if (t.type === 'INCOME') ow[key] += t.amount;
+                else if (t.type === 'EXPENSE') ow[key] -= t.amount;
+            });
+            
+            let tot = Object.values(ow).reduce((s, o) => s + o, 0);
+            const contContainer = document.getElementById('contributionContainer');
+            
+            if (tot <= 0) { 
+                contContainer.innerHTML = '<p class="text-xs text-center text-slate-400 py-4">Belum ada kontribusi positif.</p>'; 
+                return; 
+            }
+
+            // MUNCULKAN KARTU ANGKA PEMISAH DI DALAM KOTAK KONTRIBUSI
+            let html = '<div class="grid grid-cols-2 gap-4 mb-4 mt-2">';
+            const textCols = ['text-emerald-600', 'text-blue-600', 'text-fuchsia-600', 'text-orange-600'];
+            const bgCols = ['bg-emerald-50', 'bg-blue-50', 'bg-fuchsia-50', 'bg-orange-50'];
+            const barCols = ['bg-emerald-500', 'bg-blue-500', 'bg-fuchsia-500', 'bg-orange-500'];
+            
+            Object.keys(ow).forEach((n, i) => {
+                let ci = i % textCols.length;
+                let b = ow[n] < 0 ? 0 : ow[n]; // Jika minus, tampilkan 0
+                html += `<div class="${bgCols[ci]} dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
+                    <span class="text-[10px] font-bold uppercase tracking-wider ${textCols[ci]} dark:text-slate-300 mb-1"><i class="fa-solid fa-user mr-1"></i> ${n}</span>
+                    <span class="font-outfit font-bold text-slate-900 dark:text-white text-base sm:text-xl whitespace-nowrap">Rp ${b.toLocaleString('id-ID')}</span>
+                </div>`;
+            });
+            html += '</div>';
+
+            // MUNCULKAN BAR PERSENTASE DI BAWAHNYA
+            Object.keys(ow).forEach((n, i) => {
+                let p = (ow[n] / tot) * 100;
+                if(p < 0) p = 0;
+                let ci = i % barCols.length;
+                html += `<div class="mb-2">
+                    <div class="flex justify-between text-xs font-semibold mb-1">
+                        <span class="text-slate-600 dark:text-slate-300">${n}</span>
+                        <span class="text-slate-900 dark:text-white font-outfit">${p.toFixed(1)}%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                        <div class="h-full rounded-full ${barCols[ci]} transition-all duration-700" style="width: ${p}%"></div>
+                    </div>
+                </div>`;
+            });
+
+            contContainer.innerHTML = html;
+        }
+
+        // ==========================================
+        // FUNGSI GRAFIK GARIS (ANTI HILANG JIKA CUMA 1 DATA)
+        // ==========================================
+        function renderLineChart(f) {
+            let gd = f.filter(t=>t.type!=='TRANSFER').sort((a,b)=>new Date(a.rawDate||0)-new Date(b.rawDate||0));
+            let iL = document.getElementById('incomePolyline'), eL = document.getElementById('expensePolyline'), cs = document.getElementById('chartStatusText');
+            
+            // JIKA KOSONG SAMA SEKALI
+            if(gd.length === 0){ 
+                iL.setAttribute('points','0,200 600,200'); 
+                eL.setAttribute('points','0,200 600,200'); 
+                cs.style.display = 'block';
+                return; 
+            }
+            cs.style.display = 'none';
+            
+            let mx = 1000; gd.forEach(t => { if(t.amount > mx) mx = t.amount; }); 
+            let ip = [], ep = [], cnt = gd.length;
+            
+            gd.forEach((t,i) => { 
+                let x = cnt === 1 ? 300 : (i / (cnt - 1)) * 560 + 20; 
+                let y = 190 - (t.amount / mx) * 170; 
+                if(t.type === 'INCOME') ip.push(`${x},${y}`); 
+                else ep.push(`${x},${y}`); 
+            });
+
+            // JIKA DATA CUMA ADA 1
+            if (ip.length === 1) { let p = ip[0].split(','); ip = [`20,${p[1]}`, `580,${p[1]}`]; }
+            if (ep.length === 1) { let p = ep[0].split(','); ep = [`20,${p[1]}`, `580,${p[1]}`]; }
+
+            iL.setAttribute('points', ip.length ? ip.join(' ') : '0,200 600,200'); 
+            eL.setAttribute('points', ep.length ? ep.join(' ') : '0,200 600,200');
         }
 
         function renderInsights(filtered) {
@@ -705,66 +807,14 @@
             } else { pbar.style.width='0%'; pbar.className='h-full rounded-full bg-emerald-500'; ptxt.innerText='Atur batas anggaran.'; }
         }
 
-        function renderContribution(filtered) {
-            let ow={}; filtered.forEach(t=>{ if(t.type==='TRANSFER')return; let nm=t.owner.trim(); let key=nm.charAt(0).toUpperCase()+nm.slice(1).toLowerCase(); if(!ow[key])ow[key]=0; if(t.type==='INCOME')ow[key]+=t.amount; else if(t.type==='EXPENSE')ow[key]-=t.amount; });
-            let tot = Object.values(ow).reduce((s,o)=>s+o,0);
-            if(tot<=0) return document.getElementById('contributionContainer').innerHTML = '<p class="text-xs text-center text-slate-400 py-4">Belum ada kontribusi positif.</p>';
-            let html = '<div class="grid grid-cols-2 gap-4 mb-4">';
-            const tCols = ['text-emerald-600', 'text-blue-600', 'text-fuchsia-600', 'text-orange-600'], bgCols = ['bg-emerald-50', 'bg-blue-50', 'bg-fuchsia-50', 'bg-orange-50'], barCols = ['bg-emerald-500', 'bg-blue-500', 'bg-fuchsia-500', 'bg-orange-500'];
-            Object.keys(ow).forEach((n, i) => {
-                html += `<div class="${bgCols[i%tCols.length]} dark:bg-slate-800 p-4 rounded-xl border border-slate-100 dark:border-slate-700 flex flex-col justify-center">
-                    <span class="text-[10px] font-bold uppercase tracking-wider ${tCols[i%tCols.length]} dark:text-slate-300 mb-1"><i class="fa-solid fa-user mr-1"></i> ${n}</span>
-                    <span class="font-outfit font-bold text-slate-900 dark:text-white text-base sm:text-xl whitespace-nowrap">Rp ${ow[n].toLocaleString('id-ID')}</span>
-                </div>`;
-            });
-            html += '</div>';
-            Object.keys(ow).forEach((n, i) => {
-                let p = (ow[n]/tot)*100;
-                html += `<div class="mb-2"><div class="flex justify-between text-xs font-semibold mb-1"><span class="text-slate-600 dark:text-slate-300">${n}</span><span class="text-slate-900 dark:text-white font-outfit">${p.toFixed(1)}%</span></div><div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden"><div class="h-full rounded-full ${barCols[i%barCols.length]} transition-all duration-700" style="width: ${p}%"></div></div></div>`;
-            });
-            document.getElementById('contributionContainer').innerHTML = html;
-        }
-
-        // ==========================================
-        // PERBAIKAN GRAFIK GARIS (ANTI HILANG)
-        // ==========================================
-        function renderLineChart(f) {
-            let gd = f.filter(t=>t.type!=='TRANSFER').sort((a,b)=>new Date(a.rawDate||0)-new Date(b.rawDate||0));
-            let iL = document.getElementById('incomePolyline'), eL = document.getElementById('expensePolyline');
-            
-            // JIKA TIDAK ADA DATA SAMA SEKALI
-            if(gd.length === 0){ 
-                iL.setAttribute('points','0,200 600,200'); 
-                eL.setAttribute('points','0,200 600,200'); 
-                return; 
-            }
-            
-            let mx = 1000; gd.forEach(t => { if(t.amount > mx) mx = t.amount; }); 
-            let ip = [], ep = [], cnt = gd.length;
-            
-            gd.forEach((t,i) => { 
-                let x = cnt === 1 ? 300 : (i / (cnt - 1)) * 560 + 20; 
-                let y = 190 - (t.amount / mx) * 170; 
-                if(t.type === 'INCOME') ip.push(`${x},${y}`); 
-                else ep.push(`${x},${y}`); 
-            });
-
-            // JIKA HANYA ADA 1 DATA, BUAT GARIS MENDATAR (AGAR TIDAK HILANG DARI LAYAR)
-            if (ip.length === 1) { let yPos = ip[0].split(',')[1]; ip = [`20,${yPos}`, `580,${yPos}`]; }
-            if (ep.length === 1) { let yPos = ep[0].split(',')[1]; ep = [`20,${yPos}`, `580,${yPos}`]; }
-
-            iL.setAttribute('points', ip.length ? ip.join(' ') : '0,200 600,200'); 
-            eL.setAttribute('points', ep.length ? ep.join(' ') : '0,200 600,200');
-        }
-
         function renderDonutChart(f) {
             let ex = f.filter(t=>t.type==='EXPENSE'), tot = ex.reduce((s,t)=>s+t.amount,0);
             const dc=document.getElementById('donutChart'), dl=document.getElementById('donutLegend');
             if(tot===0){ dc.style.background=currentTheme==='dark'?'#1e293b':'#e2e8f0'; dc.innerHTML=`<div class="w-24 h-24 sm:w-32 sm:h-32 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center flex-col shadow-inner text-center"><span class="text-xs text-slate-400">Kosong</span></div>`; dl.innerHTML='<p class="text-xs text-center text-slate-400 italic">Belum ada data pengeluaran.</p>'; return; }
             let cat={}; ex.forEach(t=>cat[t.category]=(cat[t.category]||0)+t.amount);
             let sc = Object.keys(cat).sort((a,b)=>cat[b]-cat[a]), cStr='', cPct=0, lH='';
-            sc.forEach((c,i)=>{ let a=cat[c], p=(a/tot)*100, color=getCatUI(c,i).color; cStr += `${color} ${cPct}% ${cPct+p}%${i<sc.length-1?', ':''}`; cPct+=p;
-                lH += `<div class="flex items-center justify-between text-xs mb-1.5"><div class="flex items-center space-x-2"><span class="w-3 h-3 rounded-full shrink-0" style="background-color: ${color}"></span><span class="truncate w-24 sm:w-auto">${c}</span></div><div class="space-x-2 text-right"><span class="text-slate-400">Rp ${formatShortNumber(a).replace(' ','')}</span><span class="font-semibold w-8 inline-block">${p.toFixed(0)}%</span></div></div>`;
+            sc.forEach((c,i)=>{ let a=cat[c], p=(a/tot)*100, ui=getCatUI(c,i); cStr += `${ui.color} ${cPct}% ${cPct+p}%${i<sc.length-1?', ':''}`; cPct+=p;
+                lH += `<div class="flex items-center justify-between text-xs mb-1.5"><div class="flex items-center space-x-2"><i class="fa-solid ${ui.icon} w-3 text-center" style="color:${ui.color}"></i><span class="truncate w-24 sm:w-auto">${c}</span></div><div class="space-x-2 text-right"><span class="text-slate-400">Rp ${formatShortNumber(a).replace(' ','')}</span><span class="font-semibold w-8 inline-block">${p.toFixed(0)}%</span></div></div>`;
             });
             dc.style.background = `conic-gradient(${cStr})`;
             dc.innerHTML = `<div class="w-24 h-24 sm:w-32 sm:h-32 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center flex-col shadow-inner text-center"><span class="text-[10px] text-slate-500 uppercase font-semibold mb-0.5">Total</span><span class="text-sm font-bold text-rose-500 font-outfit truncate w-20 sm:w-24">${formatShortNumber(tot)}</span></div>`;

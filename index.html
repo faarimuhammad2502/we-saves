@@ -18,7 +18,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Favicon Diperbaiki (URL Encoded SVG) -->
+    <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='25' fill='%23059669'/%3E%3Cpath d='M30 50 L45 65 L70 35' stroke='white' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 
     <style>
@@ -32,6 +32,8 @@
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
         html.dark ::-webkit-scrollbar-thumb { background: #334155; }
+        .spinner { border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; width: 16px; height: 16px; animation: spin 1s ease-in-out infinite; display: inline-block; }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
@@ -42,7 +44,7 @@
             <i class="fa-solid fa-shield-halved"></i>
         </div>
         <h1 class="font-outfit text-3xl font-bold text-slate-900 dark:text-white mb-2">WeSaves Terkunci</h1>
-        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 text-center max-w-xs leading-relaxed">Masukkan PIN keamanan untuk melihat catatan.</p>
+        <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 text-center max-w-xs leading-relaxed">Masukkan PIN keamanan untuk melihat catatan finansial bersama.</p>
         <div class="w-full max-w-xs space-y-4">
             <input type="password" id="pinInput" placeholder="Masukkan PIN..." onkeypress="if(event.key === 'Enter') checkPIN()" class="w-full text-center text-2xl tracking-[0.5em] px-4 py-4 rounded-xl border-2 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 font-outfit font-bold shadow-sm transition-colors">
             <button type="button" onclick="checkPIN()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl transition shadow-md shadow-emerald-600/20 text-sm tracking-wide">Buka Brankas</button>
@@ -75,7 +77,7 @@
 
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         
-        <!-- SUMMARY CARDS (DIKEMBALIKAN KE ATAS) -->
+        <!-- SUMMARY CARDS -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
                 <div class="flex items-center justify-between">
@@ -106,7 +108,7 @@
             </div>
         </div>
 
-        <!-- FORM & TABLE GRID (DIKEMBALIKAN KE POSISI UTAMA) -->
+        <!-- FORM & TABLE GRID -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
             <!-- FORM INPUT KIRI -->
@@ -159,11 +161,19 @@
                 </form>
             </div>
 
-            <!-- TABEL KANAN -->
+            <!-- TABEL KANAN DENGAN FITUR BARU SALDO PER PENABUNG -->
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm lg:col-span-2 flex flex-col">
+                
+                <!-- SALDO PER DOMPET (LAMA) -->
                 <div class="mb-4">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 flex items-center"><i class="fa-solid fa-wallet mr-1.5 text-blue-500"></i> Saldo Per Dompet</h3>
                     <div id="walletCardsContainer" class="flex overflow-x-auto space-x-3 pb-2 scroll-smooth hide-scrollbar"></div>
+                </div>
+
+                <!-- FITUR BARU: SALDO PER PENABUNG (TAMBAHAN TANPA MENGHAPUS YANG LAMA) -->
+                <div class="mb-6">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 flex items-center"><i class="fa-solid fa-users mr-1.5 text-indigo-500"></i> Saldo Per Penabung</h3>
+                    <div id="ownerBalancesContainer" class="flex overflow-x-auto space-x-3 pb-2 scroll-smooth hide-scrollbar"></div>
                 </div>
 
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4 pt-4 border-t border-slate-100 dark:border-slate-800">
@@ -195,21 +205,20 @@
                 <div id="paginationControls" class="flex justify-between items-center mt-4 hidden">
                     <span id="pageInfoText" class="text-xs text-slate-500">Hal 1 dari 1</span>
                     <div class="flex space-x-2">
-                        <button type="button" id="prevPageBtn" onclick="changePage(-1)" class="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 disabled:opacity-50 transition">Prev</button>
-                        <button type="button" id="nextPageBtn" onclick="changePage(1)" class="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 disabled:opacity-50 transition">Next</button>
+                        <button type="button" id="prevPageBtn" onclick="changePage(-1)" class="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 dark:bg-slate-800 disabled:opacity-50 transition">Prev</button>
+                        <button type="button" id="nextPageBtn" onclick="changePage(1)" class="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 dark:bg-slate-800 disabled:opacity-50 transition">Next</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- FITUR ANALITIK (DIPINDAHKAN KE BAWAH AGAR TIDAK GANGGU FORM UTAMA) -->
+        <!-- FITUR ANALITIK -->
         <div class="pt-8 border-t border-slate-200 dark:border-slate-800 space-y-6">
             <h2 class="font-outfit text-xl font-bold text-slate-900 dark:text-white flex items-center"><i class="fa-solid fa-chart-pie text-emerald-600 mr-2"></i> Dasbor Analitik & Filter</h2>
             
-            <!-- FILTER GLOBAL -->
             <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm gap-4 transition-colors duration-300">
                 <div class="flex items-center text-sm font-semibold text-slate-700 dark:text-slate-300 font-outfit">
-                    <i class="fa-solid fa-filter text-emerald-600 mr-2"></i> Filter Data
+                    <i class="fa-solid fa-filter text-emerald-600 mr-2"></i> Filter Data Dashboard
                 </div>
                 <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
                     <select id="filterMonth" onchange="applyFilters()" class="flex-grow sm:flex-none w-full sm:w-auto text-sm px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
@@ -224,7 +233,15 @@
                 </div>
             </div>
 
-            <!-- CHARTS & GOALS -->
+            <!-- SMART INSIGHTS -->
+            <div class="bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800/50 p-4 rounded-2xl flex items-start space-x-3 transition-colors duration-300">
+                <div class="text-indigo-500 dark:text-indigo-400 mt-0.5"><i class="fa-solid fa-lightbulb text-lg"></i></div>
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300 mb-1">Analisis Finansial Cerdas</h4>
+                    <p id="insightText" class="text-sm text-indigo-900 dark:text-indigo-200 font-medium leading-relaxed">Menganalisa data...</p>
+                </div>
+            </div>
+
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- CHART GARIS -->
                 <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 lg:col-span-2 overflow-hidden flex flex-col">
@@ -277,7 +294,7 @@
                     </div>
                 </div>
 
-                <!-- TARGET & KONTRIBUSI -->
+                <!-- TARGET & KONTRIBUSI PERSENTASE -->
                 <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-center lg:col-span-1">
                     <div class="flex items-end justify-between mb-3">
                         <div>
@@ -313,14 +330,12 @@
                 <h3 class="font-outfit font-bold text-lg flex items-center"><i class="fa-solid fa-gear text-slate-600 mr-2"></i> Pengaturan</h3>
                 <button type="button" onclick="closeSettingsModal()" class="text-slate-400 hover:text-rose-500"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
-            
             <div class="space-y-2">
                 <p class="text-xs font-bold uppercase text-emerald-600"><i class="fa-brands fa-google-drive mr-1"></i> Tarik Data (Sheet ke Web)</p>
                 <button type="button" id="pullDataBtn" onclick="pullDataFromSheet()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl transition text-sm flex justify-center items-center">
                     <i class="fa-solid fa-cloud-arrow-down mr-2"></i> Sinkronkan Data Sekarang
                 </button>
             </div>
-            
             <div class="space-y-2 pt-3 border-t border-slate-100 dark:border-slate-800">
                 <p class="text-xs font-bold uppercase text-emerald-600"><i class="fa-solid fa-key mr-1"></i> Ubah PIN</p>
                 <div class="flex space-x-2">
@@ -331,7 +346,7 @@
             <div class="space-y-2">
                 <p class="text-xs font-bold uppercase text-blue-600"><i class="fa-solid fa-building-columns mr-1"></i> Daftar Dompet</p>
                 <div class="flex space-x-2">
-                    <input type="text" id="newBankInput" placeholder="Tambah bank..." class="flex-grow text-sm px-4 py-2.5 rounded-xl border border-slate-300 dark:bg-slate-800 focus:outline-none focus:border-blue-500">
+                    <input type="text" id="newBankInput" placeholder="Tambah bank baru..." class="flex-grow text-sm px-4 py-2.5 rounded-xl border border-slate-300 dark:bg-slate-800 focus:outline-none focus:border-blue-500">
                     <button type="button" onclick="addBank()" class="bg-blue-100 text-blue-600 px-4 rounded-xl text-sm"><i class="fa-solid fa-plus"></i></button>
                 </div>
                 <div id="bankListContainer" class="flex flex-wrap gap-2 pt-1"></div>
@@ -339,7 +354,7 @@
             <div class="space-y-2">
                 <p class="text-xs font-bold uppercase text-rose-600"><i class="fa-solid fa-tags mr-1"></i> Daftar Kategori</p>
                 <div class="flex space-x-2">
-                    <input type="text" id="newCategoryInput" placeholder="Tambah kategori..." class="flex-grow text-sm px-4 py-2.5 rounded-xl border border-slate-300 dark:bg-slate-800 focus:outline-none focus:border-rose-500">
+                    <input type="text" id="newCategoryInput" placeholder="Tambah kategori baru..." class="flex-grow text-sm px-4 py-2.5 rounded-xl border border-slate-300 dark:bg-slate-800 focus:outline-none focus:border-rose-500">
                     <button type="button" onclick="addCategory()" class="bg-rose-100 text-rose-600 px-4 rounded-xl text-sm"><i class="fa-solid fa-plus"></i></button>
                 </div>
                 <div id="categoryListContainer" class="flex flex-wrap gap-2 pt-1"></div>
@@ -418,7 +433,7 @@
         let currentType = 'INCOME';
         let transactions = JSON.parse(localStorage.getItem('wesaves_tx')) || [];
         let googleScriptUrl = localStorage.getItem('wesaves_script_url') || '';
-        let currentTheme = localStorage.getItem('wesaves_theme') || 'dark'; // Sesuai gambar
+        let currentTheme = localStorage.getItem('wesaves_theme') || 'dark';
         let savingsGoal = parseFloat(localStorage.getItem('wesaves_goal')) || 0;
         let monthlyBudget = parseFloat(localStorage.getItem('wesaves_budget')) || 0;
         let editingId = null;
@@ -470,11 +485,10 @@
         function addCategory() { const v=document.getElementById('newCategoryInput').value.trim(); if(v&&!categoryList.includes(v)){categoryList.push(v);localStorage.setItem('wesaves_categories',JSON.stringify(categoryList));renderSettingsLists();document.getElementById('newCategoryInput').value='';}}
         function deleteCategory(i) { if(categoryList.length<=1)return alert("Minimal 1!"); categoryList.splice(i,1); localStorage.setItem('wesaves_categories',JSON.stringify(categoryList)); renderSettingsLists();}
         function renderSettingsLists() {
-            document.getElementById('bankListContainer').innerHTML = bankList.map((b,i)=>`<span class="px-2 py-1 rounded border border-blue-200 bg-blue-50 text-blue-700 text-xs dark:border-blue-800/50 dark:bg-blue-900/30 dark:text-blue-300">${b} <button onclick="deleteBank(${i})" class="ml-2"><i class="fa-solid fa-xmark"></i></button></span>`).join('');
-            document.getElementById('categoryListContainer').innerHTML = categoryList.map((c,i)=>`<span class="px-2 py-1 rounded border border-rose-200 bg-rose-50 text-rose-700 text-xs dark:border-rose-800/50 dark:bg-rose-900/30 dark:text-rose-300">${c} <button onclick="deleteCategory(${i})" class="ml-2"><i class="fa-solid fa-xmark"></i></button></span>`).join('');
+            document.getElementById('bankListContainer').innerHTML = bankList.map((b,i)=>`<span class="px-2 py-1 rounded border border-blue-200 bg-blue-50 text-blue-700 text-xs dark:border-blue-800/50 dark:bg-blue-900/30 dark:text-blue-300">${b} <button onclick="deleteBank(${i})" class="ml-2 hover:text-rose-500"><i class="fa-solid fa-xmark"></i></button></span>`).join('');
+            document.getElementById('categoryListContainer').innerHTML = categoryList.map((c,i)=>`<span class="px-2 py-1 rounded border border-rose-200 bg-rose-50 text-rose-700 text-xs dark:border-rose-800/50 dark:bg-rose-900/30 dark:text-rose-300">${c} <button onclick="deleteCategory(${i})" class="ml-2 hover:text-rose-500"><i class="fa-solid fa-xmark"></i></button></span>`).join('');
         }
 
-        // PULL DATA API (PERBAIKAN CORS)
         async function pullDataFromSheet() {
             if (!googleScriptUrl) return alert("URL API kosong! Buka menu API dulu.");
             const btn = document.getElementById('pullDataBtn');
@@ -532,7 +546,6 @@
             document.getElementById('selectedDateDisplay').innerText = new Date(str+'T00:00:00').toLocaleDateString('id-ID', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
         }
 
-        // PUSH DATA API (TEXT/PLAIN)
         function handleFormSubmit(e) {
             e.preventDefault();
             const dateStr = document.getElementById('txDateValue').value;
@@ -673,9 +686,15 @@
             let ce = 0, n = new Date(); transactions.forEach(t=>{ if(t.type==='EXPENSE'){ let d=new Date(t.rawDate||0); if(d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear()) ce+=t.amount; } });
             updateBudgetUI(ce);
 
-            renderWalletBalances(); renderContribution(ft); renderLineChart(ft); renderDonutChart(ft);
+            // RENDER FITUR LAMA: SALDO DOMPET
+            renderWalletBalances(); 
+            // FITUR BARU TAHAP 13: RENDER SALDO PENABUNG
+            renderOwnerBalances();
+
+            renderContribution(ft); renderLineChart(ft); renderDonutChart(ft);
         }
 
+        // FUNGSI LAMA: SALDO DOMPET
         function renderWalletBalances() {
             let wallets = {}; bankList.forEach(b => wallets[b] = 0);
             transactions.forEach(t => {
@@ -694,6 +713,39 @@
                 return `<div class="min-w-[140px] flex-1 ${bgs[ci]} ${dbg[ci]} p-3 rounded-xl border border-slate-100 dark:border-slate-800 shrink-0 flex flex-col justify-center transition">
                     <span class="text-[10px] font-bold uppercase tracking-wider ${txt[ci]} mb-1 opacity-80">${b}</span>
                     <span class="font-outfit font-bold text-slate-900 dark:text-white text-sm sm:text-base whitespace-nowrap">Rp ${wallets[b].toLocaleString('id-ID')}</span>
+                </div>`;
+            }).join('');
+        }
+
+        // ==========================================
+        // FITUR BARU: SALDO PER PENABUNG
+        // ==========================================
+        function renderOwnerBalances() {
+            let ow = {};
+            // Hitung kepemilikan uang (mutasi tidak mengubah hak milik bersih)
+            transactions.forEach(t => {
+                if (t.type === 'TRANSFER') return;
+                let nm = t.owner;
+                if (!ow[nm]) ow[nm] = 0;
+                if (t.type === 'INCOME') ow[nm] += t.amount;
+                else if (t.type === 'EXPENSE') ow[nm] -= t.amount;
+            });
+            
+            const oc = document.getElementById('ownerBalancesContainer');
+            const bgs = ['bg-indigo-50', 'bg-teal-50', 'bg-fuchsia-50', 'bg-orange-50'];
+            const txt = ['text-indigo-600', 'text-teal-600', 'text-fuchsia-600', 'text-orange-600'];
+            const dbg = ['dark:bg-indigo-900/30', 'dark:bg-teal-900/30', 'dark:bg-fuchsia-900/30', 'dark:bg-orange-900/30'];
+            
+            if (Object.keys(ow).length === 0) {
+                oc.innerHTML = `<p class="text-xs text-slate-400 italic">Belum ada data penabung.</p>`;
+                return;
+            }
+
+            oc.innerHTML = Object.keys(ow).map((n, i) => {
+                let ci = i % bgs.length;
+                return `<div class="min-w-[140px] flex-1 ${bgs[ci]} ${dbg[ci]} p-3 rounded-xl border border-slate-100 dark:border-slate-800 shrink-0 flex flex-col justify-center transition">
+                    <span class="text-[10px] font-bold uppercase tracking-wider ${txt[ci]} mb-1 opacity-80"><i class="fa-solid fa-user mr-1"></i> ${n}</span>
+                    <span class="font-outfit font-bold text-slate-900 dark:text-white text-sm sm:text-base whitespace-nowrap">Rp ${ow[n].toLocaleString('id-ID')}</span>
                 </div>`;
             }).join('');
         }
@@ -762,7 +814,6 @@
             dl.innerHTML = lH;
         }
 
-        // PWA
         (function(){
             const m={"name":"WeSaves","short_name":"WeSaves","start_url":window.location.pathname,"display":"standalone","background_color":"#0f172a","theme_color":"#10b981","icons":[{"src":"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='25' fill='%23059669'/%3E%3Cpath d='M30 50 L45 65 L70 35' stroke='white' stroke-width='10' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E","sizes":"192x192 512x512","type":"image/svg+xml"}]};
             const l=document.createElement('link'); l.rel='manifest'; l.href=URL.createObjectURL(new Blob([JSON.stringify(m)],{type:'application/json'})); document.head.appendChild(l);

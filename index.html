@@ -56,9 +56,7 @@
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
 
-    <!-- ======================= -->
-    <!-- FITUR BARU: LAYAR LOGIN KUNCI (PIN) -->
-    <!-- ======================= -->
+    <!-- LAYAR LOGIN KUNCI (PIN) -->
     <div id="loginScreen" class="fixed inset-0 bg-slate-50 dark:bg-slate-950 z-[100] flex flex-col items-center justify-center p-4 transition-colors duration-300">
         <div class="w-24 h-24 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center text-4xl mb-6 shadow-lg shadow-emerald-500/20">
             <i class="fa-solid fa-shield-halved"></i>
@@ -128,9 +126,7 @@
     <!-- Main Content -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         
-        <!-- ======================= -->
-        <!-- FITUR SAVINGS GOAL -->
-        <!-- ======================= -->
+        <!-- SAVINGS GOAL -->
         <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
             <div class="flex items-end justify-between mb-3">
                 <div>
@@ -154,9 +150,7 @@
             <p id="goalRemainingDisplay" class="text-xs text-slate-500 dark:text-slate-400 mt-3 font-medium">Tetapkan target tabunganmu untuk melihat progres.</p>
         </div>
 
-        <!-- ======================= -->
-        <!-- FITUR FILTER GLOBAL -->
-        <!-- ======================= -->
+        <!-- FILTER GLOBAL -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm gap-4 transition-colors duration-300">
             <div class="flex items-center text-sm font-semibold text-slate-700 dark:text-slate-300 font-outfit">
                 <i class="fa-solid fa-filter text-emerald-600 mr-2"></i> Filter Data Dashboard
@@ -286,14 +280,18 @@
                         <input type="text" id="txOwner" required placeholder="Contoh: Kamu / Pasangan" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
 
+                    <!-- FITUR BARU: TOMBOL TRANSFER DITAMBAHKAN -->
                     <div>
                         <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Jenis Transaksi</label>
-                        <div class="grid grid-cols-2 gap-3">
-                            <button type="button" id="btnIncome" onclick="setTxType('INCOME')" class="py-2.5 px-4 text-xs font-semibold rounded-xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 transition flex items-center justify-center space-x-2">
-                                <i class="fa-solid fa-plus pointer-events-none"></i> <span class="pointer-events-none">Pemasukan</span>
+                        <div class="grid grid-cols-3 gap-2">
+                            <button type="button" id="btnIncome" onclick="setTxType('INCOME')" class="py-2.5 px-2 text-xs font-semibold rounded-xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 transition flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-plus pointer-events-none"></i> <span class="pointer-events-none hidden sm:inline lg:hidden xl:inline">Masuk</span>
                             </button>
-                            <button type="button" id="btnExpense" onclick="setTxType('EXPENSE')" class="py-2.5 px-4 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 transition flex items-center justify-center space-x-2">
-                                <i class="fa-solid fa-minus pointer-events-none"></i> <span class="pointer-events-none">Pengeluaran</span>
+                            <button type="button" id="btnExpense" onclick="setTxType('EXPENSE')" class="py-2.5 px-2 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 transition flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-minus pointer-events-none"></i> <span class="pointer-events-none hidden sm:inline lg:hidden xl:inline">Keluar</span>
+                            </button>
+                            <button type="button" id="btnTransfer" onclick="setTxType('TRANSFER')" class="py-2.5 px-2 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 transition flex items-center justify-center space-x-1.5">
+                                <i class="fa-solid fa-right-left pointer-events-none"></i> <span class="pointer-events-none hidden sm:inline lg:hidden xl:inline">Mutasi</span>
                             </button>
                         </div>
                     </div>
@@ -308,7 +306,7 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Akun / Rekening Nabung</label>
+                        <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Akun / Rekening (Asal)</label>
                         <select id="txBank" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                             <option value="SeaBank">SeaBank</option>
                             <option value="BCA">BCA (Bank Central Asia)</option>
@@ -316,8 +314,8 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Keterangan / Judul</label>
-                        <input type="text" id="txDesc" required placeholder="Contoh: Tabungan Bersama / Belanja" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Keterangan (Atau Tujuan Transfer)</label>
+                        <input type="text" id="txDesc" required placeholder="Contoh: Belanja / TF ke BCA" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
 
                     <div>
@@ -325,7 +323,7 @@
                         <input type="text" id="txAmount" required placeholder="100.000" oninput="formatRupiahInput(this)" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-outfit font-semibold" pattern="[0-9.]*">
                     </div>
 
-                    <div>
+                    <div id="categoryContainer">
                         <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Kategori</label>
                         <select id="txCategory" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                             <option value="Nabung / Investasi">Nabung / Investasi</option>
@@ -334,6 +332,7 @@
                             <option value="Transportasi">Transportasi</option>
                             <option value="Tagihan & Utilitas">Tagihan & Utilitas</option>
                             <option value="Hiburan & Lainnya">Hiburan & Lainnya</option>
+                            <option value="Transfer Antar Rekening" class="hidden" id="optTransfer">Transfer Antar Rekening</option>
                         </select>
                     </div>
 
@@ -452,9 +451,9 @@
     <!-- JavaScript Logic -->
     <script>
         // ==========================================
-        // FITUR BARU: SISTEM KEAMANAN PIN
+        // SISTEM KEAMANAN PIN
         // ==========================================
-        const APP_PIN = "1234"; // SILAKAN UBAH PIN DEFAULT DI SINI
+        const APP_PIN = "1234";
 
         function checkPIN() {
             const inputVal = document.getElementById('pinInput').value;
@@ -481,7 +480,7 @@
         }
 
         // ==========================================
-        // FITUR INJEKSI PWA (PROGRESSIVE WEB APP)
+        // INJEKSI PWA (PROGRESSIVE WEB APP)
         // ==========================================
         (function initPWA() {
             const manifestJSON = {
@@ -562,7 +561,6 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Cek status kunci saat load
             if (sessionStorage.getItem('wesaves_unlocked') === 'true') {
                 document.getElementById('loginScreen').style.display = 'none';
             }
@@ -608,17 +606,30 @@
             }
         }
 
+        // FITUR BARU: Handle Pilihan Tipe Transfer
         function setTxType(type) {
             currentType = type;
-            const btnIncome = document.getElementById('btnIncome');
-            const btnExpense = document.getElementById('btnExpense');
+            const btnIn = document.getElementById('btnIncome');
+            const btnEx = document.getElementById('btnExpense');
+            const btnTr = document.getElementById('btnTransfer');
+            const catSelect = document.getElementById('txCategory');
+            const optTransfer = document.getElementById('optTransfer');
+
+            // Reset ke style default (tidak aktif)
+            const inactiveClass = "py-2.5 px-2 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 transition flex items-center justify-center space-x-1.5";
+            btnIn.className = inactiveClass;
+            btnEx.className = inactiveClass;
+            btnTr.className = inactiveClass;
 
             if (type === 'INCOME') {
-                btnIncome.className = "py-2.5 px-4 text-xs font-semibold rounded-xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 transition flex items-center justify-center space-x-2";
-                btnExpense.className = "py-2.5 px-4 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 transition flex items-center justify-center space-x-2";
-            } else {
-                btnExpense.className = "py-2.5 px-4 text-xs font-semibold rounded-xl border border-rose-500 bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 transition flex items-center justify-center space-x-2";
-                btnIncome.className = "py-2.5 px-4 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 transition flex items-center justify-center space-x-2";
+                btnIn.className = "py-2.5 px-2 text-xs font-semibold rounded-xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 transition flex items-center justify-center space-x-1.5";
+                if(catSelect.value === 'Transfer Antar Rekening') catSelect.selectedIndex = 0;
+            } else if (type === 'EXPENSE') {
+                btnEx.className = "py-2.5 px-2 text-xs font-semibold rounded-xl border border-rose-500 bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 transition flex items-center justify-center space-x-1.5";
+                if(catSelect.value === 'Transfer Antar Rekening') catSelect.selectedIndex = 0;
+            } else if (type === 'TRANSFER') {
+                btnTr.className = "py-2.5 px-2 text-xs font-semibold rounded-xl border border-blue-500 bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-400 transition flex items-center justify-center space-x-1.5";
+                catSelect.value = 'Transfer Antar Rekening'; // Paksa kategori ke transfer
             }
         }
 
@@ -720,7 +731,8 @@
             const rawAmount = document.getElementById('txAmount').value.replace(/\./g, '');
             const amount = parseFloat(rawAmount);
 
-            const category = document.getElementById('txCategory').value;
+            let category = document.getElementById('txCategory').value;
+            if(currentType === 'TRANSFER') category = 'Transfer Antar Rekening'; // Auto override
 
             const dateObj = new Date(inputDate + 'T00:00:00');
             const optionsDate = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
@@ -789,8 +801,10 @@
             document.getElementById('txAmount').value = t.amount;
             formatRupiahInput(document.getElementById('txAmount'));
             
-            document.getElementById('txCategory').value = t.category;
-            setTxType(t.type);
+            setTxType(t.type); // Harus panggil ini dulu
+            if(t.type !== 'TRANSFER') {
+                document.getElementById('txCategory').value = t.category;
+            }
 
             document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-emerald-600 mr-2"></i> Edit Catatan`;
             document.getElementById('submitBtnText').innerText = "Update Transaksi";
@@ -877,15 +891,31 @@
             } else {
                 tbody.innerHTML = '';
                 filteredTx.forEach(t => {
+                    // MENGABAIKAN TRANSFER UNTUK TOTAL SALDO
                     if (t.type === 'INCOME') income += t.amount;
-                    else expense += t.amount;
+                    else if (t.type === 'EXPENSE') expense += t.amount;
+
+                    // UI Tipe Transaksi
+                    let typeBadge = '';
+                    let amountText = '';
+                    
+                    if (t.type === 'INCOME') {
+                        typeBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400">Pemasukan</span>`;
+                        amountText = `<td class="py-4 px-4 text-right font-outfit font-semibold text-emerald-600 dark:text-emerald-400">+ Rp ${t.amount.toLocaleString('id-ID')}</td>`;
+                    } else if (t.type === 'EXPENSE') {
+                        typeBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400">Pengeluaran</span>`;
+                        amountText = `<td class="py-4 px-4 text-right font-outfit font-semibold text-rose-600 dark:text-rose-400">- Rp ${t.amount.toLocaleString('id-ID')}</td>`;
+                    } else if (t.type === 'TRANSFER') {
+                        typeBadge = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400">Mutasi</span>`;
+                        amountText = `<td class="py-4 px-4 text-right font-outfit font-semibold text-blue-600 dark:text-blue-400">⇄ Rp ${t.amount.toLocaleString('id-ID')}</td>`;
+                    }
 
                     const tr = document.createElement('tr');
                     tr.className = "hover:bg-slate-50 dark:hover:bg-slate-800/50 transition border-b border-slate-100 dark:border-slate-800 last:border-0";
                     tr.innerHTML = `
                         <td class="py-4 px-4 font-medium text-slate-900 dark:text-white">
                             <div class="flex flex-col sm:flex-row sm:items-center space-y-1 sm:space-y-0 sm:space-x-2 mb-1">
-                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 w-fit">${t.owner}</span>
+                                <span class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 w-fit">${t.owner}</span>
                                 <span class="leading-tight">${t.description}</span>
                             </div>
                             <span class="text-xs text-slate-400 dark:text-slate-500 block">${t.dateTime} &bull; <span class="font-medium">${t.category}</span></span>
@@ -894,13 +924,9 @@
                             <span class="px-2 py-1 rounded-md font-medium border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 whitespace-nowrap">${t.bank}</span>
                         </td>
                         <td class="py-4 px-4">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${t.type === 'INCOME' ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400'}">
-                                ${t.type === 'INCOME' ? 'Pemasukan' : 'Pengeluaran'}
-                            </span>
+                            ${typeBadge}
                         </td>
-                        <td class="py-4 px-4 text-right font-outfit font-semibold ${t.type === 'INCOME' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">
-                            ${t.type === 'INCOME' ? '+' : '-'} Rp ${t.amount.toLocaleString('id-ID')}
-                        </td>
+                        ${amountText}
                         <td class="py-4 px-4 text-center whitespace-nowrap">
                             <button type="button" onclick="editTransaction(${t.id})" title="Edit Catatan" class="text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition p-2 bg-slate-50 dark:bg-slate-800 hover:bg-emerald-50 dark:hover:bg-emerald-900/30 rounded-lg mr-1"><i class="fa-solid fa-pen-to-square pointer-events-none"></i></button>
                             <button type="button" onclick="deleteTransaction(${t.id})" title="Hapus Catatan" class="text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition p-2 bg-slate-50 dark:bg-slate-800 hover:bg-rose-50 dark:hover:bg-rose-900/30 rounded-lg"><i class="fa-solid fa-trash-can pointer-events-none"></i></button>
@@ -919,6 +945,7 @@
             let allTimeExpense = transactions.filter(t => t.type === 'EXPENSE').reduce((s, t) => s + t.amount, 0);
             updateGoalUI(allTimeIncome - allTimeExpense); 
 
+            // Grafik otomatis membuang tipe TRANSFER
             renderLineChart(filteredTx);
             renderDonutChart(filteredTx); 
         }
@@ -958,7 +985,10 @@
             const expensePolyline = document.getElementById('expensePolyline');
             const chartStatusText = document.getElementById('chartStatusText');
 
-            if (dataToRender.length < 2) {
+            // Abaikan TRANSFER untuk hitungan garis
+            let graphData = dataToRender.filter(t => t.type !== 'TRANSFER');
+
+            if (graphData.length < 2) {
                 incomePolyline.setAttribute('points', '0,200 600,200');
                 expensePolyline.setAttribute('points', '0,200 600,200');
                 chartStatusText.style.display = 'block';
@@ -967,7 +997,7 @@
 
             chartStatusText.style.display = 'none';
 
-            let sorted = [...dataToRender].sort((a, b) => new Date(a.rawDate || 0) - new Date(b.rawDate || 0));
+            let sorted = [...graphData].sort((a, b) => new Date(a.rawDate || 0) - new Date(b.rawDate || 0));
             
             let maxVal = 1000;
             sorted.forEach(t => {
@@ -984,7 +1014,7 @@
 
                 if (t.type === 'INCOME') {
                     incomePoints.push(`${x},${y}`);
-                } else {
+                } else if (t.type === 'EXPENSE') {
                     expensePoints.push(`${x},${y}`);
                 }
             });
@@ -1009,6 +1039,7 @@
         }
 
         function renderDonutChart(dataToRender) {
+            // Hanya merender yang tipenya PENGELUARAN
             let expenseTx = dataToRender.filter(t => t.type === 'EXPENSE');
             let totalExpense = expenseTx.reduce((sum, t) => sum + t.amount, 0);
 

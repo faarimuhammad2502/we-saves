@@ -240,24 +240,42 @@
                 <p id="chartStatusText" class="text-center text-xs text-slate-400 dark:text-slate-500 italic">Belum cukup data pada filter ini.</p>
             </div>
 
-            <!-- Grafik Donat -->
-            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 lg:col-span-1 flex flex-col">
-                <div class="flex items-center justify-between mb-2">
-                    <h2 class="font-outfit text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center">
-                        <i class="fa-solid fa-chart-pie text-emerald-600 mr-2"></i> Porsi Pengeluaran
-                    </h2>
-                </div>
-                
-                <div class="flex-grow flex flex-col items-center justify-center py-4">
-                    <div id="donutChart" class="w-32 h-32 sm:w-40 sm:h-40 rounded-full flex items-center justify-center transition-all duration-500" style="background: #e2e8f0;">
-                        <div id="donutInner" class="w-24 h-24 sm:w-32 sm:h-32 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center shadow-inner flex-col text-center">
-                            <span class="text-xs text-slate-400">Belum ada</span>
+            <!-- Grafik Donat & FITUR BARU: ANGGARAN BULANAN -->
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 lg:col-span-1 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <h2 class="font-outfit text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center">
+                            <i class="fa-solid fa-chart-pie text-emerald-600 mr-2"></i> Porsi Pengeluaran
+                        </h2>
+                    </div>
+                    
+                    <div class="flex-grow flex flex-col items-center justify-center py-4">
+                        <div id="donutChart" class="w-32 h-32 sm:w-40 sm:h-40 rounded-full flex items-center justify-center transition-all duration-500" style="background: #e2e8f0;">
+                            <div id="donutInner" class="w-24 h-24 sm:w-32 sm:h-32 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center shadow-inner flex-col text-center">
+                                <span class="text-xs text-slate-400">Belum ada</span>
+                            </div>
                         </div>
+                    </div>
+
+                    <div id="donutLegend" class="mt-2 border-t border-slate-100 dark:border-slate-800 w-full space-y-2 pt-4">
+                        <p class="text-xs text-center text-slate-400 italic">Belum ada data pengeluaran.</p>
                     </div>
                 </div>
 
-                <div id="donutLegend" class="mt-2 pt-4 border-t border-slate-100 dark:border-slate-800 w-full space-y-2">
-                    <p class="text-xs text-center text-slate-400 italic">Belum ada data pengeluaran.</p>
+                <!-- ANGGARAN BULANAN UI -->
+                <div class="mt-6 pt-5 border-t border-slate-200 dark:border-slate-700 w-full">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 flex items-center"><i class="fa-solid fa-wallet text-emerald-600 mr-1.5"></i> Anggaran Bulan Ini</span>
+                        <button onclick="openBudgetModal()" class="text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 text-xs transition p-1"><i class="fa-solid fa-pen-to-square"></i></button>
+                    </div>
+                    <div class="flex justify-between items-end mb-1.5">
+                        <span id="budgetUsedText" class="font-bold text-slate-900 dark:text-white text-lg font-outfit">Rp 0</span>
+                        <span id="budgetLimitText" class="text-slate-500 dark:text-slate-400 text-xs font-medium mb-1">/ Rp 0</span>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
+                        <div id="budgetProgressBar" class="h-full rounded-full bg-emerald-500 transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    <p id="budgetWarningText" class="text-[11px] text-slate-500 dark:text-slate-400 mt-2 font-medium">Atur batas maksimal pengeluaran bulananmu.</p>
                 </div>
             </div>
 
@@ -280,7 +298,6 @@
                         <input type="text" id="txOwner" required placeholder="Contoh: Kamu / Pasangan" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
 
-                    <!-- FITUR BARU: TOMBOL TRANSFER DITAMBAHKAN -->
                     <div>
                         <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Jenis Transaksi</label>
                         <div class="grid grid-cols-3 gap-2">
@@ -396,6 +413,27 @@
             <div class="flex space-x-3 pt-2">
                 <button type="button" onclick="saveGoal()" class="flex-grow bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl transition text-sm shadow-md shadow-emerald-600/20">Simpan Target</button>
                 <button type="button" onclick="closeGoalModal()" class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL BARU: Atur Anggaran Bulanan -->
+    <div id="budgetModal" style="display: none;" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-outfit font-bold text-base flex items-center">
+                    <i class="fa-solid fa-wallet text-emerald-600 mr-2"></i> Atur Anggaran Bulanan
+                </h3>
+                <button type="button" onclick="closeBudgetModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg pointer-events-none"></i></button>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Batas maksimal pengeluaranmu dalam satu bulan. Jika melebihi batas, bar akan berwarna merah.</p>
+            <div>
+                <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Batas Anggaran (Rp)</label>
+                <input type="text" id="budgetInput" placeholder="Misal: 3.000.000" oninput="formatRupiahInput(this)" class="w-full text-base px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold font-outfit" pattern="[0-9.]*">
+            </div>
+            <div class="flex space-x-3 pt-2">
+                <button type="button" onclick="saveBudget()" class="flex-grow bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl transition text-sm shadow-md shadow-emerald-600/20">Simpan Anggaran</button>
+                <button type="button" onclick="closeBudgetModal()" class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium">Batal</button>
             </div>
         </div>
     </div>
@@ -546,6 +584,7 @@
         let googleScriptUrl = localStorage.getItem('wesaves_script_url') || '';
         let currentTheme = localStorage.getItem('wesaves_theme') || 'light';
         let savingsGoal = parseFloat(localStorage.getItem('wesaves_goal')) || 0;
+        let monthlyBudget = parseFloat(localStorage.getItem('wesaves_budget')) || 0; // State Anggaran Bulanan
         let editingId = null; 
         
         let filterMonth = 'all';
@@ -606,16 +645,13 @@
             }
         }
 
-        // FITUR BARU: Handle Pilihan Tipe Transfer
         function setTxType(type) {
             currentType = type;
             const btnIn = document.getElementById('btnIncome');
             const btnEx = document.getElementById('btnExpense');
             const btnTr = document.getElementById('btnTransfer');
             const catSelect = document.getElementById('txCategory');
-            const optTransfer = document.getElementById('optTransfer');
 
-            // Reset ke style default (tidak aktif)
             const inactiveClass = "py-2.5 px-2 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 transition flex items-center justify-center space-x-1.5";
             btnIn.className = inactiveClass;
             btnEx.className = inactiveClass;
@@ -629,7 +665,7 @@
                 if(catSelect.value === 'Transfer Antar Rekening') catSelect.selectedIndex = 0;
             } else if (type === 'TRANSFER') {
                 btnTr.className = "py-2.5 px-2 text-xs font-semibold rounded-xl border border-blue-500 bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-400 transition flex items-center justify-center space-x-1.5";
-                catSelect.value = 'Transfer Antar Rekening'; // Paksa kategori ke transfer
+                catSelect.value = 'Transfer Antar Rekening'; 
             }
         }
 
@@ -674,21 +710,37 @@
             document.getElementById('selectedDateDisplay').innerText = dateObj.toLocaleDateString('id-ID', options);
         }
 
+        // GOAL MODAL
         function openGoalModal() {
             document.getElementById('goalInput').value = savingsGoal > 0 ? savingsGoal : '';
             formatRupiahInput(document.getElementById('goalInput'));
             document.getElementById('goalModal').style.display = 'flex';
         }
-
         function closeGoalModal() {
             document.getElementById('goalModal').style.display = 'none';
         }
-
         function saveGoal() {
             const rawGoal = document.getElementById('goalInput').value.replace(/\./g, '');
             savingsGoal = parseFloat(rawGoal) || 0;
             localStorage.setItem('wesaves_goal', savingsGoal);
             closeGoalModal();
+            renderTransactions(); 
+        }
+
+        // BUDGET MODAL
+        function openBudgetModal() {
+            document.getElementById('budgetInput').value = monthlyBudget > 0 ? monthlyBudget : '';
+            formatRupiahInput(document.getElementById('budgetInput'));
+            document.getElementById('budgetModal').style.display = 'flex';
+        }
+        function closeBudgetModal() {
+            document.getElementById('budgetModal').style.display = 'none';
+        }
+        function saveBudget() {
+            const rawBudget = document.getElementById('budgetInput').value.replace(/\./g, '');
+            monthlyBudget = parseFloat(rawBudget) || 0;
+            localStorage.setItem('wesaves_budget', monthlyBudget);
+            closeBudgetModal();
             renderTransactions(); 
         }
 
@@ -732,7 +784,7 @@
             const amount = parseFloat(rawAmount);
 
             let category = document.getElementById('txCategory').value;
-            if(currentType === 'TRANSFER') category = 'Transfer Antar Rekening'; // Auto override
+            if(currentType === 'TRANSFER') category = 'Transfer Antar Rekening'; 
 
             const dateObj = new Date(inputDate + 'T00:00:00');
             const optionsDate = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
@@ -801,7 +853,7 @@
             document.getElementById('txAmount').value = t.amount;
             formatRupiahInput(document.getElementById('txAmount'));
             
-            setTxType(t.type); // Harus panggil ini dulu
+            setTxType(t.type); 
             if(t.type !== 'TRANSFER') {
                 document.getElementById('txCategory').value = t.category;
             }
@@ -891,11 +943,9 @@
             } else {
                 tbody.innerHTML = '';
                 filteredTx.forEach(t => {
-                    // MENGABAIKAN TRANSFER UNTUK TOTAL SALDO
                     if (t.type === 'INCOME') income += t.amount;
                     else if (t.type === 'EXPENSE') expense += t.amount;
 
-                    // UI Tipe Transaksi
                     let typeBadge = '';
                     let amountText = '';
                     
@@ -936,47 +986,61 @@
                 });
             }
 
-            let balance = income - expense;
-            elTotalBalance.innerText = `Rp ${balance.toLocaleString('id-ID')}`;
+            elTotalBalance.innerText = `Rp ${(income - expense).toLocaleString('id-ID')}`;
             elTotalIncome.innerText = `Rp ${income.toLocaleString('id-ID')}`;
             elTotalExpense.innerText = `Rp ${expense.toLocaleString('id-ID')}`;
 
+            // KALKULASI GOAL (All time)
             let allTimeIncome = transactions.filter(t => t.type === 'INCOME').reduce((s, t) => s + t.amount, 0);
             let allTimeExpense = transactions.filter(t => t.type === 'EXPENSE').reduce((s, t) => s + t.amount, 0);
             updateGoalUI(allTimeIncome - allTimeExpense); 
 
-            // Grafik otomatis membuang tipe TRANSFER
+            // KALKULASI ANGGARAN BULAN INI (Hanya pengeluaran bulan berjalan yang asli)
+            let currentMonthExpense = 0;
+            const now = new Date();
+            transactions.forEach(t => {
+                if (t.type === 'EXPENSE') {
+                    const txDate = new Date(t.rawDate || 0);
+                    if (txDate.getMonth() === now.getMonth() && txDate.getFullYear() === now.getFullYear()) {
+                        currentMonthExpense += t.amount;
+                    }
+                }
+            });
+            updateBudgetUI(currentMonthExpense);
+
             renderLineChart(filteredTx);
             renderDonutChart(filteredTx); 
         }
 
-        function updateGoalUI(allTimeBalance) {
-            const goalAmountDisplay = document.getElementById('goalAmountDisplay');
-            const goalPercentageDisplay = document.getElementById('goalPercentageDisplay');
-            const goalProgressBar = document.getElementById('goalProgressBar');
-            const goalRemainingDisplay = document.getElementById('goalRemainingDisplay');
+        function updateBudgetUI(expense) {
+            const budgetUsedText = document.getElementById('budgetUsedText');
+            const budgetLimitText = document.getElementById('budgetLimitText');
+            const budgetProgressBar = document.getElementById('budgetProgressBar');
+            const budgetWarningText = document.getElementById('budgetWarningText');
 
-            goalAmountDisplay.innerText = `Rp ${savingsGoal.toLocaleString('id-ID')}`;
+            budgetUsedText.innerText = `Rp ${formatShortNumber(expense)}`;
+            budgetLimitText.innerText = `/ Rp ${formatShortNumber(monthlyBudget)}`;
 
-            if (savingsGoal > 0) {
-                let percentage = (allTimeBalance / savingsGoal) * 100;
-                if (percentage < 0) percentage = 0;
-                
-                let displayPct = percentage > 100 ? 100 : percentage;
-                
-                goalPercentageDisplay.innerText = `${percentage.toFixed(1)}%`;
-                goalProgressBar.style.width = `${displayPct}%`;
+            if (monthlyBudget > 0) {
+                let pct = (expense / monthlyBudget) * 100;
+                let displayPct = pct > 100 ? 100 : pct;
+                budgetProgressBar.style.width = `${displayPct}%`;
 
-                let remaining = savingsGoal - allTimeBalance;
-                if (remaining > 0) {
-                    goalRemainingDisplay.innerHTML = `Kurang <span class="font-bold text-slate-700 dark:text-slate-200">Rp ${remaining.toLocaleString('id-ID')}</span> lagi untuk mencapai target di tahun 2028.`;
+                if (pct >= 100) {
+                    budgetProgressBar.className = 'h-full rounded-full bg-rose-500 transition-all duration-500';
+                    budgetWarningText.innerHTML = '<span class="text-rose-500 font-semibold dark:text-rose-400">Overbudget!</span> Kamu melebihi batas bulan ini.';
+                } else if (pct >= 80) {
+                    budgetProgressBar.className = 'h-full rounded-full bg-amber-500 transition-all duration-500';
+                    budgetWarningText.innerHTML = '<span class="text-amber-500 font-semibold dark:text-amber-400">Awas!</span> Anggaran bulanan hampir habis.';
                 } else {
-                    goalRemainingDisplay.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400 font-bold">Luar biasa! 🎉</span> Target tabungan 2028 sudah tercapai!`;
+                    budgetProgressBar.className = 'h-full rounded-full bg-emerald-500 transition-all duration-500';
+                    budgetWarningText.innerHTML = 'Pengeluaran bulan ini masih dalam batas aman.';
                 }
             } else {
-                goalPercentageDisplay.innerText = `0%`;
-                goalProgressBar.style.width = `0%`;
-                goalRemainingDisplay.innerText = `Tetapkan target tabunganmu untuk melihat progres.`;
+                budgetProgressBar.style.width = '0%';
+                budgetProgressBar.className = 'h-full rounded-full bg-emerald-500 transition-all duration-500';
+                budgetWarningText.innerText = 'Atur batas maksimal pengeluaran bulananmu.';
+                budgetLimitText.innerText = '/ Rp 0';
             }
         }
 
@@ -985,7 +1049,6 @@
             const expensePolyline = document.getElementById('expensePolyline');
             const chartStatusText = document.getElementById('chartStatusText');
 
-            // Abaikan TRANSFER untuk hitungan garis
             let graphData = dataToRender.filter(t => t.type !== 'TRANSFER');
 
             if (graphData.length < 2) {
@@ -1033,13 +1096,12 @@
         }
 
         function formatShortNumber(num) {
-            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'Jt';
-            if (num >= 1000) return (num / 1000).toFixed(0) + 'Rb';
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + ' Jt';
+            if (num >= 1000) return (num / 1000).toFixed(0) + ' Rb';
             return num.toString();
         }
 
         function renderDonutChart(dataToRender) {
-            // Hanya merender yang tipenya PENGELUARAN
             let expenseTx = dataToRender.filter(t => t.type === 'EXPENSE');
             let totalExpense = expenseTx.reduce((sum, t) => sum + t.amount, 0);
 
@@ -1081,7 +1143,7 @@
                             <span class="text-slate-600 dark:text-slate-300 truncate w-32 sm:w-auto" title="${cat}">${cat}</span>
                         </div>
                         <div class="flex items-center space-x-2">
-                            <span class="text-slate-400">Rp ${formatShortNumber(amount)}</span>
+                            <span class="text-slate-400">Rp ${formatShortNumber(amount).replace(' ','')}</span>
                             <span class="font-semibold text-slate-800 dark:text-slate-200 w-8 text-right">${percent.toFixed(0)}%</span>
                         </div>
                     </div>

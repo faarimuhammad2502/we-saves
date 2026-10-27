@@ -124,7 +124,7 @@
     <!-- Main Content -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         
-        <!-- FITUR BARU TAHAP 10: SAVINGS GOAL & KONTRIBUSI PASANGAN -->
+        <!-- SAVINGS GOAL & KONTRIBUSI PASANGAN -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <!-- KARTU 1: SAVINGS GOAL -->
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden flex flex-col justify-center">
@@ -150,7 +150,7 @@
                 <p id="goalRemainingDisplay" class="text-xs text-slate-500 dark:text-slate-400 mt-3 font-medium">Tetapkan target tabunganmu untuk melihat progres.</p>
             </div>
 
-            <!-- KARTU 2: KONTRIBUSI TABUNGAN (BARU) -->
+            <!-- KARTU 2: KONTRIBUSI TABUNGAN -->
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden flex flex-col justify-center">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="font-outfit text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center">
@@ -158,7 +158,6 @@
                     </h2>
                     <span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md font-medium">Sesuai Filter</span>
                 </div>
-                <!-- Tempat grafik progress kontribusi akan diinjeksi Javascript -->
                 <div id="contributionContainer" class="space-y-4 flex-grow flex flex-col justify-center">
                     <p class="text-xs text-slate-500 dark:text-slate-400 italic text-center">Belum ada data kontribusi yang cukup.</p>
                 </div>
@@ -179,7 +178,6 @@
                 <select id="filterOwner" onchange="applyFilters()" class="flex-grow sm:flex-none w-full sm:w-auto text-sm px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
                     <option value="all">Semua Penabung</option>
                 </select>
-                <!-- Tombol Ekspor CSV -->
                 <button type="button" onclick="exportDataToCSV()" title="Unduh CSV" class="flex-grow sm:flex-none w-full sm:w-auto inline-flex items-center justify-center space-x-2 text-sm font-medium bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:text-indigo-400 dark:hover:bg-indigo-900/50 px-4 py-2.5 rounded-xl transition border border-indigo-200 dark:border-indigo-800">
                     <i class="fa-solid fa-download pointer-events-none"></i>
                     <span class="pointer-events-none">Unduh CSV</span>
@@ -374,16 +372,25 @@
                 </form>
             </div>
 
-            <!-- Tabel Riwayat Transaksi -->
+            <!-- Tabel Riwayat Transaksi dengan PAGINASI & PENCARIAN -->
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm lg:col-span-2 flex flex-col">
-                <div class="flex items-center justify-between mb-4">
+                
+                <!-- FITUR BARU: HEADER TABEL DENGAN LIVE SEARCH -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
                     <h2 class="font-outfit text-lg font-bold text-slate-900 dark:text-white flex items-center">
                         <i class="fa-solid fa-clock-rotate-left mr-2 text-slate-500 dark:text-slate-400"></i> Riwayat Cashflow
                     </h2>
-                    <span id="txCount" class="text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400">0 Transaksi</span>
+                    
+                    <div class="flex items-center gap-3">
+                        <div class="relative w-full sm:w-48 md:w-56">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 text-xs"></i>
+                            <input type="text" id="searchInput" oninput="handleSearch()" placeholder="Cari keterangan..." class="w-full text-xs pl-8 pr-3 py-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500">
+                        </div>
+                        <span id="txCount" class="text-[10px] font-medium px-2.5 py-1.5 rounded-md bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 whitespace-nowrap">0 Transaksi</span>
+                    </div>
                 </div>
 
-                <div class="overflow-x-auto flex-grow rounded-xl">
+                <div class="overflow-x-auto flex-grow rounded-xl border border-slate-100 dark:border-slate-800/50">
                     <table class="w-full text-left border-collapse min-w-max">
                         <thead>
                             <tr class="border-b border-slate-200 dark:border-slate-800 text-xs font-outfit uppercase tracking-wider text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/50">
@@ -401,12 +408,21 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
 
+                <!-- FITUR BARU: KONTROL PAGINASI -->
+                <div id="paginationControls" class="flex justify-between items-center mt-4 hidden">
+                    <span id="pageInfoText" class="text-xs text-slate-500 dark:text-slate-400">Halaman 1 dari 1</span>
+                    <div class="flex space-x-2">
+                        <button type="button" id="prevPageBtn" onclick="changePage(-1)" class="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition">Sebelumnya</button>
+                        <button type="button" id="nextPageBtn" onclick="changePage(1)" class="px-3 py-1.5 text-xs font-medium rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 disabled:opacity-50 disabled:cursor-not-allowed transition">Berikutnya</button>
+                    </div>
+                </div>
+
+            </div>
         </div>
     </main>
 
-    <!-- MODAL PENGATURAN APLIKASI (DIPERBARUI) -->
+    <!-- MODAL PENGATURAN APLIKASI -->
     <div id="settingsModal" style="display: none;" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-6 max-h-[90vh] overflow-y-auto">
             <div class="flex items-center justify-between sticky top-0 bg-white dark:bg-slate-900 py-2 border-b border-slate-100 dark:border-slate-800 z-10">
@@ -442,7 +458,6 @@
                 <div id="categoryListContainer" class="flex flex-wrap gap-2 pt-1"></div>
             </div>
 
-            <!-- FITUR BARU TAHAP 10: BACKUP, RESTORE (IMPORT CSV) & RESET -->
             <div class="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
                 <p class="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400"><i class="fa-solid fa-database mr-1"></i> Data & Pencadangan</p>
                 <div class="flex space-x-2">
@@ -574,6 +589,15 @@
         }
 
         // ==========================================
+        // VARIABEL STATE FILTER & PAGINASI
+        // ==========================================
+        let filterMonth = 'all';
+        let filterOwner = 'all';
+        let searchQuery = '';
+        let currentPage = 1;
+        const rowsPerPage = 10; // Jumlah transaksi per halaman
+
+        // ==========================================
         // FUNGSI RENDER DROPDOWN FORM
         // ==========================================
         function renderFormDropdowns() {
@@ -692,7 +716,6 @@
             });
         }
 
-
         // ==========================================
         // SISTEM KEAMANAN PIN
         // ==========================================
@@ -780,9 +803,10 @@
         }
 
         // ==========================================
-        // FITUR BARU: IMPOR CSV & RESET DATA (TAHAP 10)
+        // IMPOR CSV & RESET DATA
         // ==========================================
         function exportDataToCSV() {
+            // Abaikan pencarian kata kunci jika diekspor, hanya ikuti filter Bulan & Penabung
             let filteredTx = transactions.filter(t => {
                 let matchMonth = true;
                 let matchOwner = true;
@@ -871,7 +895,6 @@
                 if(newTx.length > 0) {
                     const confirmImport = confirm(`Ditemukan ${newTx.length} data transaksi di file CSV. Ingin menimpa/memulihkan data saat ini dengan file tersebut?`);
                     if(confirmImport) {
-                        // Urutkan kembali berdasarkan ID terbaru (menurun)
                         newTx.sort((a,b) => b.id - a.id);
                         transactions = newTx;
                         saveAndRefresh();
@@ -899,7 +922,7 @@
 
 
         // ==========================================
-        // LOGIKA APLIKASI UTAMA
+        // LOGIKA APLIKASI UTAMA & FORM
         // ==========================================
         document.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('wesaves_unlocked') === 'true') {
@@ -1047,6 +1070,22 @@
         function saveAndRefresh() {
             localStorage.setItem('wesaves_tx', JSON.stringify(transactions));
             updateOwnerFilterOptions(); 
+            // Setiap ada perubahan data, kembalikan ke halaman 1
+            currentPage = 1;
+            renderTransactions();
+        }
+
+        // ==========================================
+        // FUNGSI PAGINASI & PENCARIAN (TAHAP 11)
+        // ==========================================
+        function handleSearch() {
+            searchQuery = document.getElementById('searchInput').value.toLowerCase().trim();
+            currentPage = 1; // Kembali ke halaman 1 setiap kali mencari
+            renderTransactions();
+        }
+
+        function changePage(step) {
+            currentPage += step;
             renderTransactions();
         }
 
@@ -1056,7 +1095,13 @@
             const elTotalBalance = document.getElementById('totalBalance');
             const elTotalIncome = document.getElementById('totalIncome');
             const elTotalExpense = document.getElementById('totalExpense');
+            
+            const paginationControls = document.getElementById('paginationControls');
+            const pageInfoText = document.getElementById('pageInfoText');
+            const prevPageBtn = document.getElementById('prevPageBtn');
+            const nextPageBtn = document.getElementById('nextPageBtn');
 
+            // 1. Filter Dasar (Bulan & Penabung)
             let filteredTx = transactions.filter(t => {
                 let matchMonth = true;
                 let matchOwner = true;
@@ -1084,19 +1129,51 @@
                 return matchMonth && matchOwner;
             });
 
+            // 2. Filter Pencarian Teks (Live Search)
+            if (searchQuery !== '') {
+                filteredTx = filteredTx.filter(t => 
+                    t.description.toLowerCase().includes(searchQuery) || 
+                    t.owner.toLowerCase().includes(searchQuery) ||
+                    t.category.toLowerCase().includes(searchQuery) ||
+                    t.bank.toLowerCase().includes(searchQuery)
+                );
+            }
+
             txCount.innerText = `${filteredTx.length} Transaksi`;
 
+            // HITUNG STATISTIK BERDASARKAN SEMUA DATA YANG DIFILTER (Bukan hanya halaman ini)
             let income = 0;
             let expense = 0;
+            filteredTx.forEach(t => {
+                if (t.type === 'INCOME') income += t.amount;
+                else if (t.type === 'EXPENSE') expense += t.amount;
+            });
+            elTotalBalance.innerText = `Rp ${(income - expense).toLocaleString('id-ID')}`;
+            elTotalIncome.innerText = `Rp ${income.toLocaleString('id-ID')}`;
+            elTotalExpense.innerText = `Rp ${expense.toLocaleString('id-ID')}`;
 
-            if (filteredTx.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400 dark:text-slate-500">Belum ada catatan pada filter ini.</td></tr>`;
+            // 3. PAGINASI (Memotong Data yang Ditampilkan)
+            const totalPages = Math.ceil(filteredTx.length / rowsPerPage) || 1;
+            
+            // Validasi currentPage jika melebihi totalPages akibat penghapusan/pencarian
+            if (currentPage > totalPages) currentPage = totalPages;
+            if (currentPage < 1) currentPage = 1;
+
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = startIndex + rowsPerPage;
+            const paginatedTx = filteredTx.slice(startIndex, endIndex);
+
+            // RENDER TABEL
+            if (paginatedTx.length === 0) {
+                if (searchQuery !== '') {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400 dark:text-slate-500">Pencarian <b>"${searchQuery}"</b> tidak ditemukan.</td></tr>`;
+                } else {
+                    tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400 dark:text-slate-500">Belum ada catatan pada filter ini.</td></tr>`;
+                }
+                paginationControls.classList.add('hidden');
             } else {
                 tbody.innerHTML = '';
-                filteredTx.forEach(t => {
-                    if (t.type === 'INCOME') income += t.amount;
-                    else if (t.type === 'EXPENSE') expense += t.amount;
-
+                paginatedTx.forEach(t => {
                     let typeBadge = '';
                     let amountText = '';
                     
@@ -1135,16 +1212,24 @@
                     `;
                     tbody.appendChild(tr);
                 });
+
+                // Update UI Paginasi
+                if (totalPages > 1) {
+                    paginationControls.classList.remove('hidden');
+                    pageInfoText.innerText = `Halaman ${currentPage} dari ${totalPages}`;
+                    prevPageBtn.disabled = currentPage === 1;
+                    nextPageBtn.disabled = currentPage === totalPages;
+                } else {
+                    paginationControls.classList.add('hidden');
+                }
             }
 
-            elTotalBalance.innerText = `Rp ${(income - expense).toLocaleString('id-ID')}`;
-            elTotalIncome.innerText = `Rp ${income.toLocaleString('id-ID')}`;
-            elTotalExpense.innerText = `Rp ${expense.toLocaleString('id-ID')}`;
-
+            // ALL TIME STATS FOR GOAL
             let allTimeIncome = transactions.filter(t => t.type === 'INCOME').reduce((s, t) => s + t.amount, 0);
             let allTimeExpense = transactions.filter(t => t.type === 'EXPENSE').reduce((s, t) => s + t.amount, 0);
             updateGoalUI(allTimeIncome - allTimeExpense); 
 
+            // ALL TIME STATS FOR BUDGET (Current Month Only)
             let currentMonthExpense = 0;
             const now = new Date();
             transactions.forEach(t => {
@@ -1157,12 +1242,13 @@
             });
             updateBudgetUI(currentMonthExpense);
 
+            // GRAFIK & KONTRIBUSI BERDASARKAN SEMUA DATA YANG DIFILTER (Bukan Paginated)
             renderContribution(filteredTx); 
             renderLineChart(filteredTx);
             renderDonutChart(filteredTx); 
         }
 
-        // FITUR BARU: STATISTIK KONTRIBUSI PASANGAN
+        // FUNGSI LAINNYA (TETAP SAMA SEPERTI TAHAP SEBELUMNYA)
         function renderContribution(dataToRender) {
             const contContainer = document.getElementById('contributionContainer');
             let ownerBalances = {};
@@ -1170,9 +1256,7 @@
             dataToRender.forEach(t => {
                 if(t.type === 'TRANSFER') return;
                 
-                // Normalisasi nama owner dengan kapital huruf pertama (opsional, jika penulisan tidak konsisten)
                 let o = t.owner.toUpperCase(); 
-
                 if(!ownerBalances[o]) ownerBalances[o] = { name: t.owner, balance: 0 };
                 
                 if(t.type === 'INCOME') ownerBalances[o].balance += t.amount;
@@ -1187,9 +1271,7 @@
             }
 
             let html = '';
-            // Urutkan dari kontribusi terbesar
             let sortedOwners = Object.values(ownerBalances).sort((a,b) => b.balance - a.balance);
-            
             const barColors = ['bg-blue-500', 'bg-rose-500', 'bg-amber-500', 'bg-emerald-500', 'bg-purple-500'];
             
             sortedOwners.forEach((obj, idx) => {
@@ -1210,7 +1292,6 @@
                 </div>
                 `;
             });
-            
             contContainer.innerHTML = html;
         }
 
@@ -1289,15 +1370,12 @@
                 chartStatusText.style.display = 'block';
                 return;
             }
-
             chartStatusText.style.display = 'none';
 
             let sorted = [...graphData].sort((a, b) => new Date(a.rawDate || 0) - new Date(b.rawDate || 0));
             
             let maxVal = 1000;
-            sorted.forEach(t => {
-                if (t.amount > maxVal) maxVal = t.amount;
-            });
+            sorted.forEach(t => { if (t.amount > maxVal) maxVal = t.amount; });
 
             let incomePoints = [];
             let expensePoints = [];
@@ -1307,24 +1385,12 @@
                 let x = (index / (count - 1)) * 560 + 20;
                 let y = 190 - (t.amount / maxVal) * 170;
 
-                if (t.type === 'INCOME') {
-                    incomePoints.push(`${x},${y}`);
-                } else if (t.type === 'EXPENSE') {
-                    expensePoints.push(`${x},${y}`);
-                }
+                if (t.type === 'INCOME') incomePoints.push(`${x},${y}`);
+                else if (t.type === 'EXPENSE') expensePoints.push(`${x},${y}`);
             });
 
-            if (incomePoints.length > 0) {
-                incomePolyline.setAttribute('points', incomePoints.join(' '));
-            } else {
-                incomePolyline.setAttribute('points', '0,200 600,200');
-            }
-
-            if (expensePoints.length > 0) {
-                expensePolyline.setAttribute('points', expensePoints.join(' '));
-            } else {
-                expensePolyline.setAttribute('points', '0,200 600,200');
-            }
+            incomePolyline.setAttribute('points', incomePoints.length > 0 ? incomePoints.join(' ') : '0,200 600,200');
+            expensePolyline.setAttribute('points', expensePoints.length > 0 ? expensePoints.join(' ') : '0,200 600,200');
         }
 
         function formatShortNumber(num) {
@@ -1365,7 +1431,6 @@
 
                 conicString += `${color} ${currentPercent}% ${currentPercent + percent}%`;
                 if (index < sortedCategories.length - 1) conicString += ', ';
-
                 currentPercent += percent;
 
                 legendHTML += `
@@ -1391,17 +1456,9 @@
             donutLegend.innerHTML = legendHTML;
         }
 
-        // ==========================================
-        // FUNGSI GOOGLE SHEETS API
-        // ==========================================
-        function openSyncModal() {
-            document.getElementById('syncModal').style.display = 'flex';
-        }
-
-        function closeSyncModal() {
-            document.getElementById('syncModal').style.display = 'none';
-        }
-
+        function openSyncModal() { document.getElementById('syncModal').style.display = 'flex'; }
+        function closeSyncModal() { document.getElementById('syncModal').style.display = 'none'; }
+        
         function saveScriptUrl() {
             const url = document.getElementById('scriptUrlInput').value.trim();
             googleScriptUrl = url;

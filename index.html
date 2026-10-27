@@ -5,30 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>WeSaves - Shared Financial & Cashflow Tracker</title>
     
-    <!-- Meta Tags PWA Dasar -->
+    <!-- Meta Tags PWA -->
     <meta name="theme-color" content="#0f172a" id="metaThemeColor">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="WeSaves">
 
-    <!-- Tailwind CSS Stable CDN -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        outfit: ['Outfit', 'sans-serif'],
-                    }
-                }
-            }
-        }
+        tailwind.config = { darkMode: 'class', theme: { extend: { fontFamily: { sans: ['Inter', 'sans-serif'], outfit: ['Outfit', 'sans-serif'] } } } }
     </script>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -48,9 +36,11 @@
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-emerald-500 selection:text-white">
 
-    <!-- LAYAR LOGIN KUNCI (PIN) -->
+    <!-- LOGIN SCREEN -->
     <div id="loginScreen" class="fixed inset-0 bg-slate-50 dark:bg-slate-950 z-[100] flex flex-col items-center justify-center p-4 transition-colors duration-300">
-        <div class="w-24 h-24 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center text-4xl mb-6 shadow-lg shadow-emerald-500/20"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="w-24 h-24 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center text-4xl mb-6 shadow-lg shadow-emerald-500/20">
+            <i class="fa-solid fa-shield-halved"></i>
+        </div>
         <h1 class="font-outfit text-3xl font-bold text-slate-900 dark:text-white mb-2">WeSaves Terkunci</h1>
         <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 text-center max-w-xs leading-relaxed">Masukkan PIN keamanan untuk melihat catatan finansial bersama.</p>
         <div class="w-full max-w-xs space-y-4">
@@ -60,7 +50,7 @@
         </div>
     </div>
 
-    <!-- Header / Navbar -->
+    <!-- NAVBAR -->
     <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3 overflow-hidden">
@@ -75,10 +65,10 @@
 
             <div class="flex items-center space-x-2 shrink-0">
                 <button type="button" id="installAppBtn" onclick="installPWA()" style="display: none;" class="items-center justify-center space-x-2 text-xs font-bold bg-emerald-600 text-white hover:bg-emerald-700 w-9 h-9 sm:w-auto sm:px-3.5 sm:py-2 rounded-xl transition shadow-md"><i class="fa-solid fa-download"></i><span class="hidden sm:inline">Install</span></button>
-                <a href="https://docs.google.com/spreadsheets/d/1dvS_pNOD8r9dijxBsEqJfH1-H3mYm48VtssncO2bsBM/edit" target="_blank" class="inline-flex items-center justify-center space-x-2 text-xs font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-950/50 dark:text-blue-400 w-9 h-9 sm:w-auto sm:px-3.5 sm:py-2 rounded-xl transition border border-blue-200"><i class="fa-solid fa-table-list"></i><span class="hidden lg:inline">Sheet</span></a>
-                <button type="button" onclick="openSyncModal()" class="inline-flex items-center justify-center space-x-2 text-xs font-medium bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-400 w-9 h-9 sm:w-auto sm:px-3.5 sm:py-2 rounded-xl transition border border-emerald-200"><i class="fa-brands fa-google-drive"></i><span class="hidden lg:inline">API</span></button>
-                <button type="button" onclick="openSettingsModal()" class="inline-flex items-center justify-center text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 w-9 h-9 rounded-xl transition border border-slate-200"><i class="fa-solid fa-gear"></i></button>
-                <button type="button" onclick="toggleTheme()" class="inline-flex items-center justify-center text-xs font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 w-9 h-9 rounded-xl transition border border-slate-200 hover:bg-slate-50"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+                <a href="https://docs.google.com/spreadsheets/d/1dvS_pNOD8r9dijxBsEqJfH1-H3mYm48VtssncO2bsBM/edit" target="_blank" class="inline-flex items-center justify-center space-x-2 text-xs font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-950/50 dark:text-blue-400 w-9 h-9 sm:w-auto sm:px-3.5 sm:py-2 rounded-xl transition border border-blue-200 dark:border-blue-800"><i class="fa-solid fa-table-list"></i><span class="hidden lg:inline">Sheet</span></a>
+                <button type="button" onclick="openSyncModal()" class="inline-flex items-center justify-center space-x-2 text-xs font-medium bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-400 w-9 h-9 sm:w-auto sm:px-3.5 sm:py-2 rounded-xl transition border border-emerald-200 dark:border-emerald-800"><i class="fa-brands fa-google-drive"></i><span class="hidden lg:inline">API</span></button>
+                <button type="button" onclick="openSettingsModal()" class="inline-flex items-center justify-center text-xs font-medium bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 w-9 h-9 rounded-xl transition border border-slate-200 dark:border-slate-700"><i class="fa-solid fa-gear"></i></button>
+                <button type="button" onclick="toggleTheme()" class="inline-flex items-center justify-center text-xs font-medium bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 w-9 h-9 rounded-xl transition border border-slate-200 dark:border-slate-700 hover:bg-slate-50"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
                 <button type="button" onclick="lockApp()" class="inline-flex items-center justify-center space-x-2 text-xs font-medium bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 w-9 h-9 sm:w-auto sm:px-3.5 sm:py-2 rounded-xl transition border border-rose-200 hover:bg-rose-100"><i class="fa-solid fa-lock"></i><span class="hidden lg:inline">Kunci</span></button>
             </div>
         </div>
@@ -86,61 +76,7 @@
 
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         
-        <!-- SMART INSIGHTS -->
-        <div class="bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800/50 p-4 rounded-2xl flex items-start space-x-3 transition-colors duration-300">
-            <div class="text-indigo-500 dark:text-indigo-400 mt-0.5"><i class="fa-solid fa-lightbulb text-lg"></i></div>
-            <div>
-                <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300 mb-1">Analisis Finansial Cerdas</h4>
-                <p id="insightText" class="text-sm text-indigo-900 dark:text-indigo-200 font-medium leading-relaxed">Menganalisa data...</p>
-            </div>
-        </div>
-
-        <!-- GOAL & KONTRIBUSI -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden flex flex-col justify-center">
-                <div class="flex items-end justify-between mb-3">
-                    <div>
-                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-outfit mb-1 flex items-center"><i class="fa-solid fa-bullseye text-emerald-600 mr-2"></i> Target Tabungan</p>
-                        <div class="flex items-center space-x-3">
-                            <h3 id="goalAmountDisplay" class="text-2xl sm:text-3xl font-bold font-outfit text-slate-900 dark:text-white">Rp 0</h3>
-                            <button type="button" onclick="openGoalModal()" class="text-slate-400 hover:text-emerald-600 transition p-1.5"><i class="fa-solid fa-pen-to-square"></i></button>
-                        </div>
-                    </div>
-                    <div class="text-right"><span id="goalPercentageDisplay" class="text-2xl sm:text-3xl font-bold font-outfit text-emerald-600 dark:text-emerald-400">0%</span></div>
-                </div>
-                <div class="w-full bg-slate-100 dark:bg-slate-800 h-4 rounded-full overflow-hidden p-0.5 relative">
-                    <div id="goalProgressBar" class="bg-emerald-500 h-full rounded-full transition-all duration-700 relative" style="width: 0%"></div>
-                </div>
-                <p id="goalRemainingDisplay" class="text-xs text-slate-500 dark:text-slate-400 mt-3 font-medium">Tetapkan target tabunganmu.</p>
-            </div>
-            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden flex flex-col justify-center">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="font-outfit text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center"><i class="fa-solid fa-hand-holding-heart text-rose-500 mr-2"></i> Kontribusi Tabungan</h2>
-                    <span class="text-[10px] sm:text-xs text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded-md font-medium">Sesuai Filter</span>
-                </div>
-                <div id="contributionContainer" class="space-y-4 flex-grow flex flex-col justify-center"></div>
-            </div>
-        </div>
-
-        <!-- FILTER GLOBAL & EKSPOR -->
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm gap-4 transition-colors duration-300">
-            <div class="flex items-center text-sm font-semibold text-slate-700 dark:text-slate-300 font-outfit">
-                <i class="fa-solid fa-filter text-emerald-600 mr-2"></i> Filter Data Dashboard
-            </div>
-            <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
-                <select id="filterMonth" onchange="applyFilters()" class="flex-grow sm:flex-none w-full sm:w-auto text-sm px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
-                    <option value="all">Semua Waktu</option>
-                    <option value="current">Bulan Ini</option>
-                    <option value="last">Bulan Lalu</option>
-                </select>
-                <select id="filterOwner" onchange="applyFilters()" class="flex-grow sm:flex-none w-full sm:w-auto text-sm px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
-                    <option value="all">Semua Penabung</option>
-                </select>
-                <button type="button" onclick="exportDataToCSV()" class="flex-grow sm:flex-none w-full sm:w-auto inline-flex items-center justify-center space-x-2 text-sm font-medium bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:text-indigo-400 px-4 py-2.5 rounded-xl transition border border-indigo-200 dark:border-indigo-800"><i class="fa-solid fa-download"></i><span>Unduh CSV</span></button>
-            </div>
-        </div>
-
-        <!-- SUMMARY CARDS UTAMA -->
+        <!-- SUMMARY CARDS -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
                 <div class="flex items-center justify-between">
@@ -171,64 +107,15 @@
             </div>
         </div>
 
-        <!-- ========================================== -->
-        <!-- FITUR BARU: PEMISAH TOTAL TABUNGAN LANGSUNG -->
-        <!-- ========================================== -->
+        <!-- SALDO PER PENABUNG (TAMPILAN BESAR) -->
         <div id="topOwnerBalances" class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <!-- Akan diisi otomatis oleh Javascript sesuai nama penabung (Faari / Michelle) -->
+            <!-- Akan diisi otomatis oleh Javascript sesuai nama penabung Faari dan Michelle -->
         </div>
 
-        <!-- CHARTS -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 lg:col-span-2 overflow-hidden flex flex-col">
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    <h2 class="font-outfit text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center"><i class="fa-solid fa-chart-line text-emerald-600 mr-2"></i> Trend Grafik Cashflow</h2>
-                </div>
-                <div class="w-full flex-grow min-h-[224px] relative flex items-center justify-center pt-4 overflow-hidden">
-                    <svg id="trendLineChart" class="w-full h-full overflow-visible" viewBox="0 0 600 200" preserveAspectRatio="none">
-                        <line x1="0" y1="0" x2="600" y2="0" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
-                        <line x1="0" y1="50" x2="600" y2="50" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
-                        <line x1="0" y1="100" x2="600" y2="100" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
-                        <line x1="0" y1="150" x2="600" y2="150" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
-                        <line x1="0" y1="200" x2="600" y2="200" stroke="currentColor" class="text-slate-200 dark:text-slate-800"/>
-                        <polyline id="incomePolyline" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0,200 600,200"/>
-                        <polyline id="expensePolyline" fill="none" stroke="#f43f5e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0,200 600,200"/>
-                    </svg>
-                </div>
-            </div>
-
-            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 lg:col-span-1 flex flex-col justify-between">
-                <div>
-                    <div class="flex items-center justify-between mb-2">
-                        <h2 class="font-outfit text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center"><i class="fa-solid fa-chart-pie text-emerald-600 mr-2"></i> Porsi Pengeluaran</h2>
-                    </div>
-                    <div class="flex-grow flex flex-col items-center justify-center py-4">
-                        <div id="donutChart" class="w-32 h-32 sm:w-40 sm:h-40 rounded-full flex items-center justify-center transition-all duration-500" style="background: #e2e8f0;">
-                            <div id="donutInner" class="w-24 h-24 sm:w-32 sm:h-32 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center shadow-inner flex-col text-center"><span class="text-xs text-slate-400">Kosong</span></div>
-                        </div>
-                    </div>
-                    <div id="donutLegend" class="mt-2 border-t border-slate-100 dark:border-slate-800 w-full space-y-2 pt-4"></div>
-                </div>
-
-                <div class="mt-6 pt-5 border-t border-slate-200 dark:border-slate-700 w-full">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold uppercase text-slate-600 dark:text-slate-400 flex items-center"><i class="fa-solid fa-wallet text-emerald-600 mr-1.5"></i> Anggaran Bulan Ini</span>
-                        <button onclick="openBudgetModal()" class="text-slate-400 hover:text-emerald-600 transition p-1"><i class="fa-solid fa-pen-to-square"></i></button>
-                    </div>
-                    <div class="flex justify-between items-end mb-1.5">
-                        <span id="budgetUsedText" class="font-bold text-slate-900 dark:text-white text-lg font-outfit">Rp 0</span>
-                        <span id="budgetLimitText" class="text-slate-500 text-xs font-medium mb-1">/ Rp 0</span>
-                    </div>
-                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-2.5 rounded-full overflow-hidden">
-                        <div id="budgetProgressBar" class="h-full rounded-full bg-emerald-500 transition-all duration-500" style="width: 0%"></div>
-                    </div>
-                    <p id="budgetWarningText" class="text-[11px] text-slate-500 mt-2 font-medium">Atur batas anggaran.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- FORM & TABLE -->
+        <!-- FORM & TABLE GRID -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <!-- FORM INPUT KIRI -->
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm lg:col-span-1 h-fit" id="formPanel">
                 <div class="flex items-center justify-between mb-4">
                     <h2 id="formTitle" class="font-outfit text-lg font-bold text-slate-900 dark:text-white flex items-center"><i class="fa-solid fa-circle-plus text-emerald-600 mr-2"></i> Tambah Catatan</h2>
@@ -236,7 +123,7 @@
                 <form id="transactionForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
                     <div>
                         <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Nama Penabung</label>
-                        <input type="text" id="txOwner" required placeholder="Contoh: Faari / Michelle" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500">
+                        <input type="text" id="txOwner" required placeholder="Contoh: Faari / Michelle" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
                     <div>
                         <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Jenis Transaksi</label>
@@ -320,6 +207,117 @@
                 </div>
             </div>
         </div>
+
+        <!-- FITUR ANALITIK -->
+        <div class="pt-8 border-t border-slate-200 dark:border-slate-800 space-y-6">
+            <h2 class="font-outfit text-xl font-bold text-slate-900 dark:text-white flex items-center"><i class="fa-solid fa-chart-pie text-emerald-600 mr-2"></i> Dasbor Analitik & Filter</h2>
+            
+            <!-- SMART INSIGHTS -->
+            <div class="bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800/50 p-4 rounded-2xl flex items-start space-x-3 transition-colors duration-300">
+                <div class="text-indigo-500 dark:text-indigo-400 mt-0.5"><i class="fa-solid fa-lightbulb text-lg"></i></div>
+                <div>
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-300 mb-1">Analisis Finansial Cerdas</h4>
+                    <p id="insightText" class="text-sm text-indigo-900 dark:text-indigo-200 font-medium leading-relaxed">Menganalisa data...</p>
+                </div>
+            </div>
+
+            <!-- FILTER GLOBAL -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm gap-4 transition-colors duration-300">
+                <div class="flex items-center text-sm font-semibold text-slate-700 dark:text-slate-300 font-outfit">
+                    <i class="fa-solid fa-filter text-emerald-600 mr-2"></i> Filter Data Dashboard
+                </div>
+                <div class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+                    <select id="filterMonth" onchange="applyFilters()" class="flex-grow sm:flex-none w-full sm:w-auto text-sm px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
+                        <option value="all">Semua Waktu</option>
+                        <option value="current">Bulan Ini</option>
+                        <option value="last">Bulan Lalu</option>
+                    </select>
+                    <select id="filterOwner" onchange="applyFilters()" class="flex-grow sm:flex-none w-full sm:w-auto text-sm px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
+                        <option value="all">Semua Penabung</option>
+                    </select>
+                    <button type="button" onclick="exportDataToCSV()" class="flex-grow sm:flex-none w-full sm:w-auto inline-flex items-center justify-center space-x-2 text-sm font-medium bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:text-indigo-400 px-4 py-2.5 rounded-xl transition border border-indigo-200 dark:border-indigo-800"><i class="fa-solid fa-download"></i><span>Unduh CSV</span></button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- CHART GARIS -->
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 lg:col-span-2 overflow-hidden flex flex-col">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <h2 class="font-outfit text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center"><i class="fa-solid fa-chart-line text-emerald-600 mr-2"></i> Trend Cashflow</h2>
+                        <div class="flex items-center space-x-4 text-xs">
+                            <span class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span><span class="text-slate-600 dark:text-slate-300">Pemasukan</span></span>
+                            <span class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span><span class="text-slate-600 dark:text-slate-300">Pengeluaran</span></span>
+                        </div>
+                    </div>
+                    <div class="w-full flex-grow min-h-[224px] relative flex items-center justify-center pt-4 overflow-hidden">
+                        <svg id="trendLineChart" class="w-full h-full overflow-visible" viewBox="0 0 600 200" preserveAspectRatio="none">
+                            <line x1="0" y1="0" x2="600" y2="0" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
+                            <line x1="0" y1="50" x2="600" y2="50" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
+                            <line x1="0" y1="100" x2="600" y2="100" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
+                            <line x1="0" y1="150" x2="600" y2="150" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
+                            <line x1="0" y1="200" x2="600" y2="200" stroke="currentColor" class="text-slate-200 dark:text-slate-800"/>
+                            <polyline id="incomePolyline" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0,200 600,200"/>
+                            <polyline id="expensePolyline" fill="none" stroke="#f43f5e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0,200 600,200"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- CHART DONUT & BUDGET -->
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 lg:col-span-1 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <h2 class="font-outfit text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center"><i class="fa-solid fa-chart-pie text-emerald-600 mr-2"></i> Porsi Pengeluaran</h2>
+                        </div>
+                        <div class="flex-grow flex flex-col items-center justify-center py-4">
+                            <div id="donutChart" class="w-32 h-32 rounded-full flex items-center justify-center transition-all duration-500" style="background: #e2e8f0;">
+                                <div class="w-24 h-24 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center shadow-inner flex-col text-center"></div>
+                            </div>
+                        </div>
+                        <div id="donutLegend" class="mt-2 border-t border-slate-100 dark:border-slate-800 w-full space-y-2 pt-4"></div>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700 w-full">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 flex items-center"><i class="fa-solid fa-wallet text-emerald-600 mr-1.5"></i> Anggaran Bulanan</span>
+                            <button onclick="openBudgetModal()" class="text-slate-400 hover:text-emerald-600 transition p-1"><i class="fa-solid fa-pen-to-square"></i></button>
+                        </div>
+                        <div class="flex justify-between items-end mb-1.5">
+                            <span id="budgetUsedText" class="font-bold text-slate-900 dark:text-white text-base font-outfit">Rp 0</span>
+                            <span id="budgetLimitText" class="text-slate-500 text-xs font-medium mb-0.5">/ Rp 0</span>
+                        </div>
+                        <div class="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                            <div id="budgetProgressBar" class="h-full rounded-full bg-emerald-500 transition-all duration-500" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TARGET & KONTRIBUSI PERSENTASE -->
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-center lg:col-span-1">
+                    <div class="flex items-end justify-between mb-3">
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-outfit mb-1 flex items-center"><i class="fa-solid fa-bullseye text-emerald-600 mr-2"></i> Target (2028)</p>
+                            <div class="flex items-center space-x-2">
+                                <h3 id="goalAmountDisplay" class="text-xl font-bold font-outfit text-slate-900 dark:text-white">Rp 0</h3>
+                                <button type="button" onclick="openGoalModal()" class="text-slate-400 hover:text-emerald-600 transition p-1"><i class="fa-solid fa-pen-to-square"></i></button>
+                            </div>
+                        </div>
+                        <div class="text-right"><span id="goalPercentageDisplay" class="text-xl font-bold font-outfit text-emerald-600">0%</span></div>
+                    </div>
+                    <div class="w-full bg-slate-100 dark:bg-slate-800 h-3 rounded-full overflow-hidden relative">
+                        <div id="goalProgressBar" class="bg-emerald-500 h-full rounded-full transition-all duration-700" style="width: 0%"></div>
+                    </div>
+                    <p id="goalRemainingDisplay" class="text-xs text-slate-500 dark:text-slate-400 mt-2 font-medium">Tetapkan target tabunganmu.</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-center lg:col-span-2">
+                    <div class="flex items-center justify-between mb-4">
+                        <h2 class="font-outfit text-base font-bold text-slate-900 dark:text-white flex items-center"><i class="fa-solid fa-hand-holding-heart text-rose-500 mr-2"></i> Kontribusi Penabung</h2>
+                    </div>
+                    <div id="contributionContainer" class="space-y-4 flex-grow flex flex-col justify-center"></div>
+                </div>
+
+            </div>
+        </div>
     </main>
 
     <!-- MODAL PENGATURAN -->
@@ -330,13 +328,7 @@
                 <button type="button" onclick="closeSettingsModal()" class="text-slate-400 hover:text-rose-500"><i class="fa-solid fa-xmark text-xl"></i></button>
             </div>
             
-            <div class="space-y-2">
-                <p class="text-xs font-bold uppercase text-emerald-600"><i class="fa-brands fa-google-drive mr-1"></i> Tarik Data (Sheet ke Web)</p>
-                <button type="button" id="pullDataBtn" onclick="pullDataFromSheet()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl transition text-sm flex justify-center items-center">
-                    <i class="fa-solid fa-cloud-arrow-down mr-2"></i> Sinkronkan Data Sekarang
-                </button>
-            </div>
-            <div class="space-y-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+            <div class="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
                 <p class="text-xs font-bold uppercase text-emerald-600"><i class="fa-solid fa-key mr-1"></i> Ubah PIN</p>
                 <div class="flex space-x-2">
                     <input type="text" id="newPinInput" placeholder="PIN Baru" class="flex-grow text-sm px-4 py-2.5 rounded-xl border border-slate-300 dark:bg-slate-800 focus:outline-none focus:border-emerald-500">
@@ -346,7 +338,7 @@
             <div class="space-y-2">
                 <p class="text-xs font-bold uppercase text-blue-600"><i class="fa-solid fa-building-columns mr-1"></i> Daftar Dompet</p>
                 <div class="flex space-x-2">
-                    <input type="text" id="newBankInput" placeholder="Tambah bank..." class="flex-grow text-sm px-4 py-2.5 rounded-xl border border-slate-300 dark:bg-slate-800 focus:outline-none focus:border-blue-500">
+                    <input type="text" id="newBankInput" placeholder="Tambah bank baru..." class="flex-grow text-sm px-4 py-2.5 rounded-xl border border-slate-300 dark:bg-slate-800 focus:outline-none focus:border-blue-500">
                     <button type="button" onclick="addBank()" class="bg-blue-100 text-blue-600 px-4 rounded-xl text-sm"><i class="fa-solid fa-plus"></i></button>
                 </div>
                 <div id="bankListContainer" class="flex flex-wrap gap-2 pt-1"></div>
@@ -354,7 +346,7 @@
             <div class="space-y-2">
                 <p class="text-xs font-bold uppercase text-rose-600"><i class="fa-solid fa-tags mr-1"></i> Daftar Kategori</p>
                 <div class="flex space-x-2">
-                    <input type="text" id="newCategoryInput" placeholder="Tambah kategori..." class="flex-grow text-sm px-4 py-2.5 rounded-xl border border-slate-300 dark:bg-slate-800 focus:outline-none focus:border-rose-500">
+                    <input type="text" id="newCategoryInput" placeholder="Tambah kategori baru..." class="flex-grow text-sm px-4 py-2.5 rounded-xl border border-slate-300 dark:bg-slate-800 focus:outline-none focus:border-rose-500">
                     <button type="button" onclick="addCategory()" class="bg-rose-100 text-rose-600 px-4 rounded-xl text-sm"><i class="fa-solid fa-plus"></i></button>
                 </div>
                 <div id="categoryListContainer" class="flex flex-wrap gap-2 pt-1"></div>
@@ -427,11 +419,31 @@
 
     <!-- JAVASCRIPT UTAMA -->
     <script>
+        // DATA DEFAULT DITANAM PERMANEN DI SINI (Data 13 Transaksimu kembali utuh!)
+        const defaultData = [
+            {id: 1792974158595, rawDate: "2026-10-05", dateTime: "Senin, 5 Okt 2026, 07:22 WIB", owner: "Faari", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 150000, category: "Nabung / Investasi", type: "INCOME"},
+            {id: 1792974136146, rawDate: "2026-09-25", dateTime: "Jumat, 25 Sep 2026, 07:22 WIB", owner: "Michelle", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 150000, category: "Nabung / Investasi", type: "INCOME"},
+            {id: 1792974107677, rawDate: "2026-09-03", dateTime: "Kamis, 3 Sep 2026, 07:21 WIB", owner: "Faari", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 250000, category: "Nabung / Investasi", type: "INCOME"},
+            {id: 1792974079710, rawDate: "2026-07-03", dateTime: "Jumat, 3 Jul 2026, 07:21 WIB", owner: "Faari", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 500000, category: "Nabung / Investasi", type: "INCOME"},
+            {id: 1793064621559, rawDate: "2026-05-03", dateTime: "Minggu, 3 Mei 2026, 07:20 WIB", owner: "Faari", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 750000, category: "Nabung / Investasi", type: "INCOME"},
+            {id: 1792974045194, rawDate: "2026-04-27", dateTime: "Senin, 27 Apr 2026, 07:20 WIB", owner: "Michelle", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 400000, category: "Nabung / Investasi", type: "INCOME"},
+            {id: 1792974014127, rawDate: "2026-04-03", dateTime: "Jumat, 3 Apr 2026, 07:20 WIB", owner: "Faari", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 500000, category: "Nabung / Investasi", type: "INCOME"},
+            {id: 1792973981786, rawDate: "2026-03-27", dateTime: "Jumat, 27 Mar 2026, 07:19 WIB", owner: "Michelle", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 500000, category: "Nabung / Investasi", type: "INCOME"},
+            {id: 1792973958939, rawDate: "2026-03-03", dateTime: "Selasa, 3 Mar 2026, 07:19 WIB", owner: "Faari", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 500000, category: "Nabung / Investasi", type: "INCOME"},
+            {id: 1792973930121, rawDate: "2026-02-27", dateTime: "Jumat, 27 Feb 2026, 07:18 WIB", owner: "Michelle", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 500000, category: "Nabung / Investasi", type: "INCOME"},
+            {id: 1792973874365, rawDate: "2026-02-03", dateTime: "Selasa, 3 Feb 2026, 07:17 WIB", owner: "Faari", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 500000, category: "Nabung / Investasi", type: "INCOME"},
+            {id: 1792973834358, rawDate: "2026-01-27", dateTime: "Selasa, 27 Jan 2026, 07:17 WIB", owner: "Michelle", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 500000, category: "Nabung / Investasi", type: "INCOME"},
+            {id: 1792973810566, rawDate: "2026-01-11", dateTime: "Minggu, 11 Jan 2026, 07:16 WIB", owner: "Faari", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 500000, category: "Nabung / Investasi", type: "INCOME"}
+        ];
+
+        let savedTx = JSON.parse(localStorage.getItem('wesaves_tx'));
+        let transactions = (savedTx && savedTx.length > 0) ? savedTx : defaultData;
+        localStorage.setItem('wesaves_tx', JSON.stringify(transactions)); // Paksa simpan ke local storage
+
         let appPin = localStorage.getItem('wesaves_pin') || "1234";
         let bankList = JSON.parse(localStorage.getItem('wesaves_banks')) || ['SeaBank', 'BCA'];
         let categoryList = JSON.parse(localStorage.getItem('wesaves_categories')) || ['Nabung / Investasi', 'Gaji / Pendapatan Bersama', 'Makanan & Minuman', 'Transportasi', 'Tagihan & Utilitas', 'Hiburan & Lainnya'];
         let currentType = 'INCOME';
-        let transactions = JSON.parse(localStorage.getItem('wesaves_tx')) || [];
         let googleScriptUrl = localStorage.getItem('wesaves_script_url') || '';
         let currentTheme = localStorage.getItem('wesaves_theme') || 'dark';
         let savingsGoal = parseFloat(localStorage.getItem('wesaves_goal')) || 0;
@@ -487,26 +499,6 @@
         function renderSettingsLists() {
             document.getElementById('bankListContainer').innerHTML = bankList.map((b,i)=>`<span class="px-2 py-1 rounded border border-blue-200 bg-blue-50 text-blue-700 text-xs dark:border-blue-800/50 dark:bg-blue-900/30 dark:text-blue-300">${b} <button onclick="deleteBank(${i})" class="ml-2 hover:text-rose-500"><i class="fa-solid fa-xmark"></i></button></span>`).join('');
             document.getElementById('categoryListContainer').innerHTML = categoryList.map((c,i)=>`<span class="px-2 py-1 rounded border border-rose-200 bg-rose-50 text-rose-700 text-xs dark:border-rose-800/50 dark:bg-rose-900/30 dark:text-rose-300">${c} <button onclick="deleteCategory(${i})" class="ml-2 hover:text-rose-500"><i class="fa-solid fa-xmark"></i></button></span>`).join('');
-        }
-
-        async function pullDataFromSheet() {
-            if (!googleScriptUrl) return alert("URL API kosong! Buka menu API dulu.");
-            const btn = document.getElementById('pullDataBtn');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Menarik data...'; btn.disabled = true;
-            try {
-                const response = await fetch(googleScriptUrl);
-                const data = await response.json();
-                if(data && Array.isArray(data)) {
-                    transactions = data; transactions.sort((a,b) => b.id - a.id);
-                    localStorage.setItem('wesaves_tx', JSON.stringify(transactions));
-                    alert(`Berhasil menarik ${data.length} transaksi!`);
-                    closeSettingsModal(); updateOwnerFilterOptions(); renderTransactions();
-                } else alert("Data kosong.");
-            } catch (err) {
-                console.error(err); alert("Gagal koneksi. Pastikan URL benar & Akses Apps Script 'Siapa saja (Anyone)'.");
-            } finally {
-                btn.innerHTML = '<i class="fa-solid fa-cloud-arrow-down mr-2"></i> Sinkronkan Data Sekarang'; btn.disabled = false;
-            }
         }
 
         function openGoalModal() { document.getElementById('goalInput').value = savingsGoal||''; formatRupiahInput(document.getElementById('goalInput')); document.getElementById('goalModal').style.display='flex'; }
@@ -686,15 +678,11 @@
             let ce = 0, n = new Date(); transactions.forEach(t=>{ if(t.type==='EXPENSE'){ let d=new Date(t.rawDate||0); if(d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear()) ce+=t.amount; } });
             updateBudgetUI(ce);
 
-            // RENDER SEMUA FITUR KARTU
             renderWalletBalances(); 
             renderTopOwnerBalances(); // FITUR BARU: Pemisah Total Tabungan
-            renderContribution(ft); 
-            renderLineChart(ft); 
-            renderDonutChart(ft);
+            renderContribution(ft); renderLineChart(ft); renderDonutChart(ft);
         }
 
-        // FUNGSI LAMA: KARTU SALDO DOMPET
         function renderWalletBalances() {
             let wallets = {}; bankList.forEach(b => wallets[b] = 0);
             transactions.forEach(t => {
@@ -720,15 +708,14 @@
         }
 
         // ==========================================
-        // FITUR BARU: KARTU TOTAL TABUNGAN TERPISAH (BESAR)
+        // FITUR BARU: KARTU TOTAL TABUNGAN TERPISAH
         // ==========================================
         function renderTopOwnerBalances() {
             let ow = {};
-            // Menggunakan data All Time agar angka tabungan selalu akurat meskipun sedang difilter
+            // Hitung dari data Semua Waktu agar jumlah total selalu presisi walaupun di-filter
             transactions.forEach(t => {
                 if (t.type === 'TRANSFER') return;
                 
-                // Rapikan nama (Faari / faari jadi sama)
                 let nm = t.owner.trim();
                 let key = nm.charAt(0).toUpperCase() + nm.slice(1).toLowerCase();
                 
@@ -738,10 +725,7 @@
             });
             
             const oc = document.getElementById('topOwnerBalances');
-            if (Object.keys(ow).length === 0) {
-                oc.innerHTML = '';
-                return;
-            }
+            if (Object.keys(ow).length === 0) { oc.innerHTML = ''; return; }
 
             const bgs = ['bg-indigo-600', 'bg-fuchsia-600', 'bg-teal-600', 'bg-orange-600'];
             
@@ -763,6 +747,27 @@
             let c={}; exp.forEach(t=>c[t.category]=(c[t.category]||0)+t.amount);
             let top = Object.keys(c).sort((a,b)=>c[b]-c[a])[0];
             box.innerHTML = `Berdasarkan filter ini, pengeluaran terbesarmu ada di kategori <strong class="text-indigo-600 dark:text-indigo-400">${top}</strong> (Rp ${formatShortNumber(c[top])}). Coba kontrol lagi ya! 💡`;
+        }
+
+        function updateGoalUI(bal) {
+            document.getElementById('goalAmountDisplay').innerText = `Rp ${savingsGoal.toLocaleString('id-ID')}`;
+            if(savingsGoal>0) {
+                let p = (bal/savingsGoal)*100; if(p<0)p=0;
+                document.getElementById('goalPercentageDisplay').innerText = `${p.toFixed(1)}%`;
+                document.getElementById('goalProgressBar').style.width = `${p>100?100:p}%`;
+                let r = savingsGoal-bal; document.getElementById('goalRemainingDisplay').innerHTML = r>0 ? `Kurang <span class="font-bold text-slate-700 dark:text-slate-200">Rp ${r.toLocaleString('id-ID')}</span> lagi.` : `<span class="text-emerald-500 font-bold">Luar biasa! 🎉</span> Target tercapai!`;
+            } else { document.getElementById('goalPercentageDisplay').innerText='0%'; document.getElementById('goalProgressBar').style.width='0%'; document.getElementById('goalRemainingDisplay').innerText = 'Tetapkan target tabunganmu.'; }
+        }
+
+        function updateBudgetUI(exp) {
+            document.getElementById('budgetUsedText').innerText = `Rp ${formatShortNumber(exp)}`; document.getElementById('budgetLimitText').innerText = `/ Rp ${formatShortNumber(monthlyBudget)}`;
+            const pbar = document.getElementById('budgetProgressBar'), ptxt = document.getElementById('budgetWarningText');
+            if(monthlyBudget>0) {
+                let p = (exp/monthlyBudget)*100; pbar.style.width = `${p>100?100:p}%`;
+                if(p>=100){ pbar.className='h-full rounded-full transition-all bg-rose-500'; ptxt.innerHTML='<span class="text-rose-500 font-semibold">Overbudget!</span> Melebihi batas bulanan.'; }
+                else if(p>=80){ pbar.className='h-full rounded-full transition-all bg-amber-500'; ptxt.innerHTML='<span class="text-amber-500 font-semibold">Awas!</span> Anggaran hampir habis.'; }
+                else { pbar.className='h-full rounded-full transition-all bg-emerald-500'; ptxt.innerHTML='Pengeluaran bulanan aman.'; }
+            } else { pbar.style.width='0%'; pbar.className='h-full rounded-full bg-emerald-500'; ptxt.innerText='Atur batas anggaran.'; }
         }
 
         function renderContribution(filtered) {

@@ -32,7 +32,7 @@
         .font-outfit { font-family: 'Outfit', sans-serif; }
         button, select, input, label { cursor: pointer; }
 
-        /* Global Theme Rules for Instant Background Switching */
+        /* Global Theme Rules */
         html.light body { background-color: #f8fafc; color: #0f172a; }
         html.dark body { background-color: #030712; color: #f8fafc; }
 
@@ -77,8 +77,36 @@
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         
+        <!-- ======================= -->
+        <!-- FITUR BARU: SAVINGS GOAL -->
+        <!-- ======================= -->
+        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden transition-colors duration-300">
+            <div class="flex items-end justify-between mb-3">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-outfit mb-1 flex items-center">
+                        <i class="fa-solid fa-bullseye text-emerald-600 mr-2"></i> Target Tabungan (Tahun 2028)
+                    </p>
+                    <div class="flex items-center space-x-3">
+                        <h3 id="goalAmountDisplay" class="text-2xl font-bold font-outfit text-slate-900 dark:text-white">Rp 0</h3>
+                        <button type="button" onclick="openGoalModal()" title="Edit Target" class="text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition p-1"><i class="fa-solid fa-pen-to-square pointer-events-none"></i></button>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <span id="goalPercentageDisplay" class="text-2xl font-bold font-outfit text-emerald-600 dark:text-emerald-400">0%</span>
+                </div>
+            </div>
+            
+            <!-- Progress Bar -->
+            <div class="w-full bg-slate-100 dark:bg-slate-800 h-4 rounded-full overflow-hidden p-0.5 relative">
+                <div id="goalProgressBar" class="bg-emerald-500 h-full rounded-full transition-all duration-700 relative" style="width: 0%"></div>
+            </div>
+            
+            <p id="goalRemainingDisplay" class="text-xs text-slate-500 dark:text-slate-400 mt-3 font-medium">Tetapkan target tabunganmu untuk melihat progres.</p>
+        </div>
+        <!-- ======================= -->
+
         <!-- Summary Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <!-- Total Saldo -->
@@ -165,13 +193,11 @@
                 </div>
 
                 <form id="transactionForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
-                    <!-- Pilih Penabung -->
                     <div>
                         <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Nama Penabung</label>
                         <input type="text" id="txOwner" required placeholder="Contoh: Kamu / Pasangan" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
 
-                    <!-- Jenis Transaksi -->
                     <div>
                         <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Jenis Transaksi</label>
                         <div class="grid grid-cols-2 gap-3">
@@ -184,7 +210,6 @@
                         </div>
                     </div>
 
-                    <!-- Pilihan Tanggal -->
                     <div>
                         <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Hari, Tanggal & Tahun Transaksi</label>
                         <button type="button" onclick="openDateModal()" class="w-full text-left text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 flex items-center justify-between">
@@ -194,7 +219,6 @@
                         <input type="hidden" id="txDateValue" required>
                     </div>
 
-                    <!-- Akun Bank -->
                     <div>
                         <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Akun / Rekening Nabung</label>
                         <select id="txBank" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
@@ -268,6 +292,27 @@
         </div>
     </main>
 
+    <!-- Modal Atur Target Tabungan -->
+    <div id="goalModal" style="display: none;" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-outfit font-bold text-base flex items-center">
+                    <i class="fa-solid fa-bullseye text-emerald-600 mr-2"></i> Atur Target Tabungan
+                </h3>
+                <button type="button" onclick="closeGoalModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg pointer-events-none"></i></button>
+            </div>
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Masukkan nominal target tabunganmu (misal untuk tahun 2028). Angka ini bisa kamu ubah kapan saja.</p>
+            <div>
+                <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Nominal Target (Rp)</label>
+                <input type="text" id="goalInput" placeholder="Misal: 50.000.000" oninput="formatRupiahInput(this)" class="w-full text-base px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold font-outfit">
+            </div>
+            <div class="flex space-x-3 pt-2">
+                <button type="button" onclick="saveGoal()" class="flex-grow bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl transition text-sm shadow-md shadow-emerald-600/20">Simpan Target</button>
+                <button type="button" onclick="closeGoalModal()" class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium">Batal</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Modal Pilih Tanggal -->
     <div id="dateModal" style="display: none;" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
@@ -322,6 +367,7 @@
         let transactions = JSON.parse(localStorage.getItem('wesaves_tx')) || [];
         let googleScriptUrl = localStorage.getItem('wesaves_script_url') || '';
         let currentTheme = localStorage.getItem('wesaves_theme') || 'light';
+        let savingsGoal = parseFloat(localStorage.getItem('wesaves_goal')) || 0; // State Target Tabungan
         let editingId = null; 
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -415,6 +461,25 @@
             document.getElementById('selectedDateDisplay').innerText = dateObj.toLocaleDateString('id-ID', options);
         }
 
+        // FUNGSI UNTUK MENGATUR GOAL TABUNGAN
+        function openGoalModal() {
+            document.getElementById('goalInput').value = savingsGoal > 0 ? savingsGoal : '';
+            formatRupiahInput(document.getElementById('goalInput'));
+            document.getElementById('goalModal').style.display = 'flex';
+        }
+
+        function closeGoalModal() {
+            document.getElementById('goalModal').style.display = 'none';
+        }
+
+        function saveGoal() {
+            const rawGoal = document.getElementById('goalInput').value.replace(/\./g, '');
+            savingsGoal = parseFloat(rawGoal) || 0;
+            localStorage.setItem('wesaves_goal', savingsGoal);
+            closeGoalModal();
+            renderTransactions(); // Render ulang UI agar bar goal terupdate
+        }
+
         function handleFormSubmit(e) {
             e.preventDefault();
             const owner = document.getElementById('txOwner').value.trim();
@@ -455,7 +520,6 @@
             };
 
             if (editingId) {
-                // EDIT DATA
                 newTx.id = editingId;
                 const index = transactions.findIndex(t => t.id === editingId);
                 if (index !== -1) {
@@ -463,17 +527,14 @@
                 }
                 cancelEdit();
                 
-                // Kirim sinyal update ke Google Sheets
                 if (googleScriptUrl) {
                     newTx.action = 'edit';
                     syncToGoogleSheet(newTx);
                 }
             } else {
-                // TAMBAH DATA
                 newTx.id = Date.now();
                 transactions.unshift(newTx);
                 
-                // Kirim sinyal tambah ke Google Sheets
                 if (googleScriptUrl) {
                     newTx.action = 'add';
                     syncToGoogleSheet(newTx);
@@ -530,7 +591,6 @@
                 if (editingId === id) cancelEdit(); 
                 saveAndRefresh();
                 
-                // Kirim sinyal hapus ke Google Sheets
                 if (googleScriptUrl) {
                     syncToGoogleSheet({ id: id, action: 'delete' });
                 }
@@ -598,6 +658,38 @@
             elTotalExpense.innerText = `Rp ${expense.toLocaleString('id-ID')}`;
 
             renderLineChart();
+            updateGoalUI(balance); // Panggil fungsi pembaruan UI Goal
+        }
+
+        // FUNGSI UPDATE UI SAVINGS GOAL
+        function updateGoalUI(balance) {
+            const goalAmountDisplay = document.getElementById('goalAmountDisplay');
+            const goalPercentageDisplay = document.getElementById('goalPercentageDisplay');
+            const goalProgressBar = document.getElementById('goalProgressBar');
+            const goalRemainingDisplay = document.getElementById('goalRemainingDisplay');
+
+            goalAmountDisplay.innerText = `Rp ${savingsGoal.toLocaleString('id-ID')}`;
+
+            if (savingsGoal > 0) {
+                let percentage = (balance / savingsGoal) * 100;
+                if (percentage < 0) percentage = 0;
+                
+                let displayPct = percentage > 100 ? 100 : percentage;
+                
+                goalPercentageDisplay.innerText = `${percentage.toFixed(1)}%`;
+                goalProgressBar.style.width = `${displayPct}%`;
+
+                let remaining = savingsGoal - balance;
+                if (remaining > 0) {
+                    goalRemainingDisplay.innerHTML = `Kurang <span class="font-bold text-slate-700 dark:text-slate-200">Rp ${remaining.toLocaleString('id-ID')}</span> lagi untuk mencapai target di tahun 2028.`;
+                } else {
+                    goalRemainingDisplay.innerHTML = `<span class="text-emerald-600 dark:text-emerald-400 font-bold">Luar biasa! 🎉</span> Target tabungan 2028 sudah tercapai!`;
+                }
+            } else {
+                goalPercentageDisplay.innerText = `0%`;
+                goalProgressBar.style.width = `0%`;
+                goalRemainingDisplay.innerText = `Tetapkan target tabunganmu untuk melihat progres.`;
+            }
         }
 
         function renderLineChart() {

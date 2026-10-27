@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id" class="light">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,12 +14,6 @@
                     fontFamily: {
                         sans: ['Inter', 'sans-serif'],
                         outfit: ['Outfit', 'sans-serif'],
-                    },
-                    colors: {
-                        slate: {
-                            850: '#151e2e',
-                            950: '#020617',
-                        }
                     }
                 }
             }
@@ -38,28 +32,20 @@
         .font-outfit { font-family: 'Outfit', sans-serif; }
         button, select, input, label { cursor: pointer; }
 
-        /* Smooth Theme Transition */
+        /* Global Theme Rules for Instant Background Switching */
+        html.light body { background-color: #f8fafc; color: #0f172a; }
+        html.dark body { background-color: #030712; color: #f8fafc; }
+
         html, body, div, header, footer, input, select, button, table, th, td {
             transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
         }
-
-        /* Hilangkan kalender icon bawaan browser pada input date khusus modal */
-        input[type="date"]::-webkit-calendar-picker-indicator {
-            cursor: pointer;
-            opacity: 0.6;
-            transition: 0.2s;
-        }
-        input[type="date"]::-webkit-calendar-picker-indicator:hover {
-            opacity: 1;
-        }
     </style>
 </head>
-<body id="appBody" class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col antialiased">
+<body class="min-h-screen flex flex-col antialiased">
 
     <!-- Header / Navbar -->
     <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <!-- Logo & Title -->
             <div class="flex items-center space-x-3 overflow-hidden">
                 <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-md shadow-emerald-600/20 shrink-0">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 sm:w-6 sm:h-6 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -73,16 +59,12 @@
                 </div>
             </div>
 
-            <!-- Action Navbar -->
             <div class="flex items-center space-x-2 shrink-0">
-                <!-- Tombol Sinkronisasi Google Drive -->
-                <button type="button" onclick="openSyncModal()" title="Sinkronisasi Google Drive" class="inline-flex items-center justify-center space-x-2 text-xs font-medium bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-400 dark:hover:bg-emerald-900/50 w-9 h-9 sm:w-auto sm:px-3.5 sm:py-2 rounded-xl border border-emerald-200 dark:border-emerald-800">
+                <button type="button" onclick="openSyncModal()" title="Sinkronisasi Google Drive" class="inline-flex items-center justify-center space-x-2 text-xs font-medium bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-400 dark:hover:bg-emerald-900/50 w-9 h-9 sm:w-auto sm:px-3.5 sm:py-2 rounded-xl transition border border-emerald-200 dark:border-emerald-800">
                     <i class="fa-brands fa-google-drive text-sm sm:text-base pointer-events-none"></i>
                     <span class="hidden sm:inline pointer-events-none">Google Sheet</span>
                 </button>
-
-                <!-- Tombol Ganti Mode (Terang / Gelap) -->
-                <button type="button" id="themeToggleBtn" onclick="toggleTheme()" title="Ganti Tema" class="w-9 h-9 sm:w-auto sm:px-3.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-medium flex items-center justify-center sm:space-x-2 hover:bg-slate-50 dark:hover:bg-slate-700">
+                <button type="button" id="themeToggleBtn" onclick="toggleTheme()" title="Ganti Tema" class="w-9 h-9 sm:w-auto sm:px-3.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-medium flex items-center justify-center sm:space-x-2 transition hover:bg-slate-50 dark:hover:bg-slate-700">
                     <i id="themeIcon" class="fa-solid fa-moon text-sm sm:text-base pointer-events-none"></i>
                     <span id="themeText" class="hidden sm:inline pointer-events-none">Mode Gelap</span>
                 </button>
@@ -152,7 +134,6 @@
                 </div>
             </div>
             
-            <!-- SVG Line Chart Container -->
             <div class="w-full h-56 relative flex items-center justify-center pt-4">
                 <svg id="trendLineChart" class="w-full h-full overflow-visible" viewBox="0 0 600 200" preserveAspectRatio="none">
                     <line x1="0" y1="0" x2="600" y2="0" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
@@ -161,55 +142,58 @@
                     <line x1="0" y1="150" x2="600" y2="150" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
                     <line x1="0" y1="200" x2="600" y2="200" stroke="currentColor" class="text-slate-200 dark:text-slate-800"/>
                     
-                    <polyline id="incomePolyline" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points=""/>
-                    <polyline id="expensePolyline" fill="none" stroke="#f43f5e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points=""/>
+                    <polyline id="incomePolyline" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0,200 600,200"/>
+                    <polyline id="expensePolyline" fill="none" stroke="#f43f5e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0,200 600,200"/>
                 </svg>
             </div>
-            <p id="chartStatusText" class="text-center text-xs text-slate-400 dark:text-slate-500 italic mt-2" style="display: none;">Belum ada data transaksi untuk menampilkan garis tren.</p>
+            <p id="chartStatusText" class="text-center text-xs text-slate-400 dark:text-slate-500 italic">Belum cukup data transaksi untuk menampilkan garis tren.</p>
         </div>
 
         <!-- Action Grid & Form Panel -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
             
-            <!-- Input Form Transaksi (1 Kolom) -->
-            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm lg:col-span-1 h-fit">
-                <h2 class="font-outfit text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center">
-                    <i class="fa-solid fa-circle-plus text-emerald-600 mr-2"></i> Tambah Catatan
-                </h2>
+            <!-- Input Form Transaksi -->
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm lg:col-span-1 h-fit" id="formPanel">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 id="formTitle" class="font-outfit text-lg font-bold text-slate-900 dark:text-white flex items-center">
+                        <i class="fa-solid fa-circle-plus text-emerald-600 mr-2"></i> Tambah Catatan
+                    </h2>
+                </div>
+
                 <form id="transactionForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
                     <!-- Pilih Penabung -->
                     <div>
                         <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Nama Penabung</label>
-                        <input type="text" id="txOwner" required placeholder="Contoh: Kamu / Pasangan" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <input type="text" id="txOwner" required placeholder="Contoh: Kamu / Pasangan" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
 
                     <!-- Jenis Transaksi -->
                     <div>
                         <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Jenis Transaksi</label>
                         <div class="grid grid-cols-2 gap-3">
-                            <button type="button" id="btnIncome" onclick="setTxType('INCOME')" class="py-2.5 px-4 text-xs font-semibold rounded-xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 flex items-center justify-center space-x-2">
+                            <button type="button" id="btnIncome" onclick="setTxType('INCOME')" class="py-2.5 px-4 text-xs font-semibold rounded-xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 transition flex items-center justify-center space-x-2">
                                 <i class="fa-solid fa-plus pointer-events-none"></i> <span class="pointer-events-none">Pemasukan</span>
                             </button>
-                            <button type="button" id="btnExpense" onclick="setTxType('EXPENSE')" class="py-2.5 px-4 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-600 dark:text-slate-400 flex items-center justify-center space-x-2">
+                            <button type="button" id="btnExpense" onclick="setTxType('EXPENSE')" class="py-2.5 px-4 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 transition flex items-center justify-center space-x-2">
                                 <i class="fa-solid fa-minus pointer-events-none"></i> <span class="pointer-events-none">Pengeluaran</span>
                             </button>
                         </div>
                     </div>
 
-                    <!-- Pilihan Tanggal Kustom Interaktif -->
+                    <!-- Pilihan Tanggal -->
                     <div>
                         <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Hari, Tanggal & Tahun Transaksi</label>
-                        <button type="button" onclick="openDateModal()" class="w-full text-left text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 flex items-center justify-between">
+                        <button type="button" onclick="openDateModal()" class="w-full text-left text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 flex items-center justify-between">
                             <span id="selectedDateDisplay" class="pointer-events-none">Pilih Tanggal...</span>
                             <i class="fa-solid fa-calendar-days text-emerald-600 pointer-events-none"></i>
                         </button>
                         <input type="hidden" id="txDateValue" required>
                     </div>
 
-                    <!-- Tempat Menabung (SeaBank / BCA) -->
+                    <!-- Akun Bank -->
                     <div>
                         <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Akun / Rekening Nabung</label>
-                        <select id="txBank" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <select id="txBank" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                             <option value="SeaBank">SeaBank</option>
                             <option value="BCA">BCA (Bank Central Asia)</option>
                         </select>
@@ -217,17 +201,17 @@
 
                     <div>
                         <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Keterangan / Judul</label>
-                        <input type="text" id="txDesc" required placeholder="Contoh: Tabungan Bersama / Belanja" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <input type="text" id="txDesc" required placeholder="Contoh: Tabungan Bersama / Belanja" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Nominal (Rp)</label>
-                        <input type="text" id="txAmount" required placeholder="100.000" oninput="formatRupiahInput(this)" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-outfit font-semibold">
+                        <input type="text" id="txAmount" required placeholder="100.000" oninput="formatRupiahInput(this)" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-outfit font-semibold">
                     </div>
 
                     <div>
                         <label class="block text-xs font-semibold uppercase text-slate-600 dark:text-slate-400 mb-1">Kategori</label>
-                        <select id="txCategory" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <select id="txCategory" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                             <option value="Nabung / Investasi">Nabung / Investasi</option>
                             <option value="Gaji / Pendapatan Bersama">Gaji / Pendapatan Bersama</option>
                             <option value="Makanan & Minuman">Makanan & Minuman</option>
@@ -237,13 +221,18 @@
                         </select>
                     </div>
 
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition shadow-md shadow-emerald-600/20 text-sm">
-                        Simpan Transaksi
-                    </button>
+                    <div class="flex space-x-3 pt-2">
+                        <button type="submit" id="submitBtn" class="flex-grow bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 rounded-xl transition shadow-md shadow-emerald-600/20 text-sm">
+                            <span id="submitBtnText">Simpan Transaksi</span>
+                        </button>
+                        <button type="button" id="cancelEditBtn" onclick="cancelEdit()" class="hidden px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium transition">
+                            Batal Edit
+                        </button>
+                    </div>
                 </form>
             </div>
 
-            <!-- Tabel Riwayat Transaksi (2 Kolom) -->
+            <!-- Tabel Riwayat Transaksi -->
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm lg:col-span-2 flex flex-col">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="font-outfit text-lg font-bold text-slate-900 dark:text-white flex items-center">
@@ -263,7 +252,7 @@
                                 <th class="py-3 px-4 font-semibold text-center">Aksi</th>
                             </tr>
                         </thead>
-                        <tbody id="transactionTableBody" class="divide-y divide-slate-200 dark:divide-slate-800 text-sm text-slate-700 dark:text-slate-300">
+                        <tbody id="transactionTableBody" class="divide-y divide-slate-200 dark:divide-slate-800 text-sm text-slate-700 dark:text-slate-200">
                             <tr>
                                 <td colspan="5" class="text-center py-8 text-slate-400 dark:text-slate-500">Belum ada catatan keuangan bersama. Yuk mulai menabung!</td>
                             </tr>
@@ -277,7 +266,7 @@
 
     <!-- Modal Pilih Tanggal -->
     <div id="dateModal" style="display: none;" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+        <div class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
             <div class="flex items-center justify-between">
                 <h3 class="font-outfit font-bold text-base flex items-center">
                     <i class="fa-solid fa-calendar-days text-emerald-600 mr-2"></i> Pilih Tanggal Transaksi
@@ -285,10 +274,10 @@
                 <button type="button" onclick="closeDateModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg pointer-events-none"></i></button>
             </div>
             <div>
-                <input type="date" id="modalDateInput" class="w-full text-base px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold" style="color-scheme: light dark;">
+                <input type="date" id="modalDateInput" class="w-full text-base px-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 font-semibold">
             </div>
             <div class="flex space-x-3 pt-2">
-                <button type="button" onclick="confirmDateSelection()" class="flex-grow bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl text-sm shadow-md shadow-emerald-600/20">OK / Pilih</button>
+                <button type="button" onclick="confirmDateSelection()" class="flex-grow bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl transition text-sm shadow-md shadow-emerald-600/20">OK / Pilih</button>
                 <button type="button" onclick="closeDateModal()" class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium">Batal</button>
             </div>
         </div>
@@ -296,7 +285,7 @@
 
     <!-- Modal Konfigurasi Google Sheet -->
     <div id="syncModal" style="display: none;" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-700 space-y-4">
+        <div class="bg-white dark:bg-slate-900 text-slate-900 dark:text-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-200 dark:border-slate-800 space-y-4">
             <div class="flex items-center justify-between">
                 <h3 class="font-outfit font-bold text-lg flex items-center">
                     <i class="fa-brands fa-google-drive text-emerald-600 mr-2"></i> Integrasi Google Sheets
@@ -311,7 +300,7 @@
                 <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/.../exec" class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
             </div>
             <div class="flex space-x-3 pt-2">
-                <button type="button" onclick="saveScriptUrl()" class="flex-grow bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl text-sm">Simpan & Hubungkan</button>
+                <button type="button" onclick="saveScriptUrl()" class="flex-grow bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 rounded-xl transition text-sm">Simpan & Hubungkan</button>
                 <button type="button" onclick="closeSyncModal()" class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium">Batal</button>
             </div>
         </div>
@@ -329,6 +318,7 @@
         let transactions = JSON.parse(localStorage.getItem('wesaves_tx')) || [];
         let googleScriptUrl = localStorage.getItem('wesaves_script_url') || '';
         let currentTheme = localStorage.getItem('wesaves_theme') || 'light';
+        let editingId = null; // Variabel baru untuk fitur edit
 
         document.addEventListener('DOMContentLoaded', () => {
             applyTheme(currentTheme);
@@ -372,11 +362,11 @@
             const btnExpense = document.getElementById('btnExpense');
 
             if (type === 'INCOME') {
-                btnIncome.className = "py-2.5 px-4 text-xs font-semibold rounded-xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 flex items-center justify-center space-x-2";
-                btnExpense.className = "py-2.5 px-4 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-600 dark:text-slate-400 flex items-center justify-center space-x-2";
+                btnIncome.className = "py-2.5 px-4 text-xs font-semibold rounded-xl border border-emerald-500 bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-400 transition flex items-center justify-center space-x-2";
+                btnExpense.className = "py-2.5 px-4 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 transition flex items-center justify-center space-x-2";
             } else {
-                btnExpense.className = "py-2.5 px-4 text-xs font-semibold rounded-xl border border-rose-500 bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 flex items-center justify-center space-x-2";
-                btnIncome.className = "py-2.5 px-4 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-850 text-slate-600 dark:text-slate-400 flex items-center justify-center space-x-2";
+                btnExpense.className = "py-2.5 px-4 text-xs font-semibold rounded-xl border border-rose-500 bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-400 transition flex items-center justify-center space-x-2";
+                btnIncome.className = "py-2.5 px-4 text-xs font-semibold rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-400 transition flex items-center justify-center space-x-2";
             }
         }
 
@@ -430,7 +420,6 @@
             
             const rawAmount = document.getElementById('txAmount').value.replace(/\./g, '');
             const amount = parseFloat(rawAmount);
-            if(isNaN(amount) || amount <= 0) return;
 
             const category = document.getElementById('txCategory').value;
 
@@ -438,13 +427,21 @@
             const optionsDate = { weekday: 'long', day: 'numeric', month: 'short', year: 'numeric' };
             const formattedDate = dateObj.toLocaleDateString('id-ID', optionsDate);
 
-            const now = new Date();
-            const formattedTime = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
+            // Jika sedang edit, jangan ubah jam aslinya. Jika buat baru, catat jam saat ini.
+            let dateTimeString = "";
+            let now = new Date();
+            let formattedTime = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }).replace('.', ':');
             
-            const dateTimeString = `${formattedDate}, ${formattedTime} WIB`;
+            if (editingId) {
+                const existingTx = transactions.find(t => t.id === editingId);
+                // Jika ingin mempertahankan jam lama saat diedit (ekstrak dari dateTime sebelumnya)
+                const oldTimePart = existingTx.dateTime.split(', ')[1]; 
+                dateTimeString = `${formattedDate}, ${oldTimePart || formattedTime + ' WIB'}`;
+            } else {
+                dateTimeString = `${formattedDate}, ${formattedTime} WIB`;
+            }
 
             const newTx = {
-                id: Date.now(),
                 rawDate: inputDate,
                 dateTime: dateTimeString,
                 owner: owner,
@@ -455,13 +452,68 @@
                 type: currentType
             };
 
-            transactions.unshift(newTx);
-            saveAndRefresh();
-            
-            if (googleScriptUrl) {
-                syncToGoogleSheet(newTx);
+            if (editingId) {
+                // Update data yang sudah ada tanpa menambah baru
+                newTx.id = editingId;
+                const index = transactions.findIndex(t => t.id === editingId);
+                if (index !== -1) {
+                    transactions[index] = newTx;
+                }
+                // Reset mode edit
+                cancelEdit();
+            } else {
+                // Tambah data baru
+                newTx.id = Date.now();
+                transactions.unshift(newTx);
+                
+                // Sinkronisasi Sheet hanya untuk penambahan baru
+                if (googleScriptUrl) {
+                    syncToGoogleSheet(newTx);
+                }
+                resetForm();
             }
 
+            saveAndRefresh();
+        }
+
+        // Fungsi Memulai Edit Transaksi
+        function editTransaction(id) {
+            const t = transactions.find(tx => tx.id === id);
+            if(!t) return;
+            
+            editingId = id;
+            
+            // Isi form dengan data lama
+            document.getElementById('txOwner').value = t.owner;
+            setFormattedDateValue(t.rawDate || new Date().toISOString().split('T')[0]);
+            document.getElementById('txBank').value = t.bank;
+            document.getElementById('txDesc').value = t.description;
+            
+            document.getElementById('txAmount').value = t.amount;
+            formatRupiahInput(document.getElementById('txAmount'));
+            
+            document.getElementById('txCategory').value = t.category;
+            setTxType(t.type);
+
+            // Ubah tampilan form untuk mode edit
+            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-pen-to-square text-emerald-600 mr-2"></i> Edit Catatan`;
+            document.getElementById('submitBtnText').innerText = "Update Transaksi";
+            document.getElementById('cancelEditBtn').classList.remove('hidden');
+
+            // Scroll ke form
+            document.getElementById('formPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Fungsi Membatalkan Edit
+        function cancelEdit() {
+            editingId = null;
+            document.getElementById('formTitle').innerHTML = `<i class="fa-solid fa-circle-plus text-emerald-600 mr-2"></i> Tambah Catatan`;
+            document.getElementById('submitBtnText').innerText = "Simpan Transaksi";
+            document.getElementById('cancelEditBtn').classList.add('hidden');
+            resetForm();
+        }
+
+        function resetForm() {
             document.getElementById('txDesc').value = '';
             document.getElementById('txAmount').value = '';
             setFormattedDateValue(new Date().toISOString().split('T')[0]);
@@ -469,8 +521,10 @@
         }
 
         function deleteTransaction(id) {
-            if(confirm("Apakah kamu yakin ingin menghapus catatan ini?")) {
+            const konfirmasi = confirm("Apakah kamu yakin ingin menghapus catatan keuangan ini?");
+            if (konfirmasi) {
                 transactions = transactions.filter(t => t.id !== id);
+                if (editingId === id) cancelEdit(); // Batalkan edit jika data yang sedang diedit dihapus
                 saveAndRefresh();
             }
         }
@@ -501,17 +555,17 @@
                     else expense += t.amount;
 
                     const tr = document.createElement('tr');
-                    tr.className = "hover:bg-slate-50 dark:hover:bg-slate-800/50";
+                    tr.className = "hover:bg-slate-50 dark:hover:bg-slate-800/50 transition";
                     tr.innerHTML = `
                         <td class="py-3 px-4 font-medium text-slate-900 dark:text-white">
                             <div class="flex items-center space-x-2">
                                 <span class="px-2 py-0.5 rounded-md text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400">${t.owner}</span>
                                 <span>${t.description}</span>
                             </div>
-                            <span class="text-xs text-slate-400 dark:text-slate-500">${t.dateTime || t.rawDate} &bull; ${t.category}</span>
+                            <span class="text-xs text-slate-400 dark:text-slate-500">${t.dateTime} &bull; ${t.category}</span>
                         </td>
                         <td class="py-3 px-4 text-xs text-slate-600 dark:text-slate-300">
-                            <span class="px-2 py-1 rounded-md font-medium border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800">${t.bank}</span>
+                            <span class="px-2 py-1 rounded-md font-medium border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800">${t.bank}</span>
                         </td>
                         <td class="py-3 px-4">
                             <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${t.type === 'INCOME' ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400' : 'bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400'}">
@@ -519,10 +573,13 @@
                             </span>
                         </td>
                         <td class="py-3 px-4 text-right font-outfit font-semibold ${t.type === 'INCOME' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">
-                            ${t.type === 'INCOME' ? '+' : '-'} Rp ${(t.amount || 0).toLocaleString('id-ID')}
+                            ${t.type === 'INCOME' ? '+' : '-'} Rp ${t.amount.toLocaleString('id-ID')}
                         </td>
                         <td class="py-3 px-4 text-center">
-                            <button type="button" onclick="deleteTransaction(${t.id})" class="text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 p-1"><i class="fa-solid fa-trash-can pointer-events-none"></i></button>
+                            <!-- Tombol Edit -->
+                            <button type="button" onclick="editTransaction(${t.id})" title="Edit Catatan" class="text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 transition p-1 mr-1"><i class="fa-solid fa-pen-to-square pointer-events-none"></i></button>
+                            <!-- Tombol Hapus -->
+                            <button type="button" onclick="deleteTransaction(${t.id})" title="Hapus Catatan" class="text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition p-1"><i class="fa-solid fa-trash-can pointer-events-none"></i></button>
                         </td>
                     `;
                     tbody.appendChild(tr);
@@ -542,68 +599,48 @@
             const expensePolyline = document.getElementById('expensePolyline');
             const chartStatusText = document.getElementById('chartStatusText');
 
-            if (transactions.length === 0) {
-                incomePolyline.setAttribute('points', '');
-                expensePolyline.setAttribute('points', '');
+            if (transactions.length < 2) {
+                incomePolyline.setAttribute('points', '0,200 600,200');
+                expensePolyline.setAttribute('points', '0,200 600,200');
                 chartStatusText.style.display = 'block';
                 return;
             }
 
             chartStatusText.style.display = 'none';
 
-            // 1. Group data by date to prevent multiple points on the same X-axis
-            let groupedByDate = {};
-            transactions.forEach(t => {
-                let d = t.rawDate || new Date().toISOString().split('T')[0];
-                if (!groupedByDate[d]) {
-                    groupedByDate[d] = { date: d, income: 0, expense: 0 };
-                }
-                if (t.type === 'INCOME') {
-                    groupedByDate[d].income += t.amount;
-                } else {
-                    groupedByDate[d].expense += t.amount;
-                }
-            });
-
-            // 2. Sort the grouped data by date ascending
-            let sortedDates = Object.values(groupedByDate).sort((a, b) => new Date(a.date) - new Date(b.date));
+            let sorted = [...transactions].sort((a, b) => new Date(a.rawDate || 0) - new Date(b.rawDate || 0));
             
-            // 3. Find Max Value for Y-Axis scaling
             let maxVal = 1000;
-            sortedDates.forEach(d => {
-                if (d.income > maxVal) maxVal = d.income;
-                if (d.expense > maxVal) maxVal = d.expense;
+            sorted.forEach(t => {
+                if (t.amount > maxVal) maxVal = t.amount;
             });
-            maxVal = maxVal * 1.1; // Add 10% padding on top
 
             let incomePoints = [];
             let expensePoints = [];
-            let count = sortedDates.length;
+            let count = sorted.length;
 
-            // 4. Generate SVG Points
-            if (count === 1) {
-                // If only 1 day of data exists, draw a horizontal line across the chart
-                let d = sortedDates[0];
-                let yInc = 190 - (d.income / maxVal) * 170;
-                let yExp = 190 - (d.expense / maxVal) * 170;
-                
-                incomePoints.push(`0,${yInc} 600,${yInc}`);
-                expensePoints.push(`0,${yExp} 600,${yExp}`);
+            sorted.forEach((t, index) => {
+                let x = (index / (count - 1)) * 560 + 20;
+                let y = 190 - (t.amount / maxVal) * 170;
+
+                if (t.type === 'INCOME') {
+                    incomePoints.push(`${x},${y}`);
+                } else {
+                    expensePoints.push(`${x},${y}`);
+                }
+            });
+
+            if (incomePoints.length > 0) {
+                incomePolyline.setAttribute('points', incomePoints.join(' '));
             } else {
-                // Connect points based on available dates
-                sortedDates.forEach((d, index) => {
-                    let x = (index / (count - 1)) * 560 + 20; // Scale X from 20 to 580
-                    let yInc = 190 - (d.income / maxVal) * 170;
-                    let yExp = 190 - (d.expense / maxVal) * 170;
-
-                    incomePoints.push(`${x},${yInc}`);
-                    expensePoints.push(`${x},${yExp}`);
-                });
+                incomePolyline.setAttribute('points', '0,200 600,200');
             }
 
-            // 5. Render Polylines
-            incomePolyline.setAttribute('points', incomePoints.join(' '));
-            expensePolyline.setAttribute('points', expensePoints.join(' '));
+            if (expensePoints.length > 0) {
+                expensePolyline.setAttribute('points', expensePoints.join(' '));
+            } else {
+                expensePolyline.setAttribute('points', '0,200 600,200');
+            }
         }
 
         function openSyncModal() {
@@ -623,7 +660,6 @@
         }
 
         function syncToGoogleSheet(tx) {
-            if(!googleScriptUrl) return;
             fetch(googleScriptUrl, {
                 method: 'POST',
                 mode: 'no-cors',

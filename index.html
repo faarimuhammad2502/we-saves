@@ -105,12 +105,33 @@
             <p id="goalRemainingDisplay" class="text-xs text-slate-500 dark:text-slate-400 mt-3 font-medium">Tetapkan target tabunganmu untuk melihat progres.</p>
         </div>
 
+        <!-- ======================= -->
+        <!-- FITUR BARU: FILTER GLOBAL -->
+        <!-- ======================= -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm gap-4 transition-colors duration-300">
+            <div class="flex items-center text-sm font-semibold text-slate-700 dark:text-slate-300 font-outfit">
+                <i class="fa-solid fa-filter text-emerald-600 mr-2"></i> Filter Data Dashboard
+            </div>
+            <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                <select id="filterMonth" onchange="applyFilters()" class="w-full sm:w-auto text-sm px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
+                    <option value="all">Semua Waktu</option>
+                    <option value="current">Bulan Ini</option>
+                    <option value="last">Bulan Lalu</option>
+                </select>
+                <select id="filterOwner" onchange="applyFilters()" class="w-full sm:w-auto text-sm px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition">
+                    <option value="all">Semua Penabung</option>
+                    <!-- Opsi akan di-generate otomatis dari data -->
+                </select>
+            </div>
+        </div>
+        <!-- ======================= -->
+
         <!-- Summary Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-outfit">Total Saldo Bersih</p>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-outfit">Total Saldo (Filtered)</p>
                         <h3 id="totalBalance" class="text-3xl font-bold font-outfit text-slate-900 dark:text-white mt-2">Rp 0</h3>
                     </div>
                     <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
@@ -118,43 +139,40 @@
                     </div>
                 </div>
                 <div class="mt-4 flex items-center text-xs text-emerald-600 dark:text-emerald-400 font-medium">
-                    <i class="fa-solid fa-arrow-trend-up mr-1.5"></i> Gabungan SeaBank & BCA
+                    <i class="fa-solid fa-arrow-trend-up mr-1.5"></i> Berdasarkan filter
                 </div>
             </div>
 
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-outfit">Total Pemasukan</p>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-outfit">Pemasukan (Filtered)</p>
                         <h3 id="totalIncome" class="text-3xl font-bold font-outfit text-emerald-600 dark:text-emerald-400 mt-2">Rp 0</h3>
                     </div>
                     <div class="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
                         <i class="fa-solid fa-arrow-down-long text-xl"></i>
                     </div>
                 </div>
-                <div class="mt-4 text-xs text-slate-500 dark:text-slate-400">Akumulasi seluruh pemasukan</div>
+                <div class="mt-4 text-xs text-slate-500 dark:text-slate-400">Pemasukan pada filter ini</div>
             </div>
 
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-semibold uppercase tracking-wider text-rose-600 dark:text-rose-400 font-outfit">Total Pengeluaran</p>
+                        <p class="text-xs font-semibold uppercase tracking-wider text-rose-600 dark:text-rose-400 font-outfit">Pengeluaran (Filtered)</p>
                         <h3 id="totalExpense" class="text-3xl font-bold font-outfit text-rose-600 dark:text-rose-400 mt-2">Rp 0</h3>
                     </div>
                     <div class="w-12 h-12 rounded-xl bg-rose-50 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 flex items-center justify-center">
                         <i class="fa-solid fa-arrow-up-long text-xl"></i>
                     </div>
                 </div>
-                <div class="mt-4 text-xs text-slate-500 dark:text-slate-400">Akumulasi seluruh pengeluaran</div>
+                <div class="mt-4 text-xs text-slate-500 dark:text-slate-400">Pengeluaran pada filter ini</div>
             </div>
         </div>
 
-        <!-- ======================= -->
-        <!-- FITUR BARU: VISUALISASI KATEGORI -->
-        <!-- ======================= -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            <!-- Grafik Garis (Line Chart Trend Cashflow) - 2 Kolom -->
+            <!-- Grafik Garis (Line Chart Trend Cashflow) -->
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 lg:col-span-2">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                     <h2 class="font-outfit text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center">
@@ -178,10 +196,10 @@
                         <polyline id="expensePolyline" fill="none" stroke="#f43f5e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0,200 600,200"/>
                     </svg>
                 </div>
-                <p id="chartStatusText" class="text-center text-xs text-slate-400 dark:text-slate-500 italic">Belum cukup data transaksi untuk menampilkan garis tren.</p>
+                <p id="chartStatusText" class="text-center text-xs text-slate-400 dark:text-slate-500 italic">Belum cukup data pada filter ini.</p>
             </div>
 
-            <!-- Grafik Donat (Kategori Pengeluaran) - 1 Kolom -->
+            <!-- Grafik Donat (Kategori Pengeluaran) -->
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 lg:col-span-1 flex flex-col">
                 <div class="flex items-center justify-between mb-2">
                     <h2 class="font-outfit text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center">
@@ -203,7 +221,6 @@
             </div>
 
         </div>
-        <!-- ======================= -->
 
         <!-- Action Grid & Form Panel -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -288,7 +305,7 @@
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm lg:col-span-2 flex flex-col">
                 <div class="flex items-center justify-between mb-4">
                     <h2 class="font-outfit text-lg font-bold text-slate-900 dark:text-white flex items-center">
-                        <i class="fa-solid fa-clock-rotate-left mr-2 text-slate-500 dark:text-slate-400"></i> Riwayat Cashflow Bersama
+                        <i class="fa-solid fa-clock-rotate-left mr-2 text-slate-500 dark:text-slate-400"></i> Riwayat Cashflow
                     </h2>
                     <span id="txCount" class="text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400">0 Transaksi</span>
                 </div>
@@ -306,7 +323,7 @@
                         </thead>
                         <tbody id="transactionTableBody" class="divide-y divide-slate-200 dark:divide-slate-800 text-sm text-slate-700 dark:text-slate-200">
                             <tr>
-                                <td colspan="5" class="text-center py-8 text-slate-400 dark:text-slate-500">Belum ada catatan keuangan bersama. Yuk mulai menabung!</td>
+                                <td colspan="5" class="text-center py-8 text-slate-400 dark:text-slate-500">Belum ada catatan pada filter ini.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -393,15 +410,18 @@
         let currentTheme = localStorage.getItem('wesaves_theme') || 'light';
         let savingsGoal = parseFloat(localStorage.getItem('wesaves_goal')) || 0;
         let editingId = null; 
+        
+        // Filter Global Variables
+        let filterMonth = 'all';
+        let filterOwner = 'all';
 
-        // Kumpulan warna untuk grafik kategori
         const categoryColors = {
-            "Nabung / Investasi": "#10b981", // emerald
-            "Gaji / Pendapatan Bersama": "#14b8a6", // teal
-            "Makanan & Minuman": "#f59e0b", // amber
-            "Transportasi": "#3b82f6", // blue
-            "Tagihan & Utilitas": "#ef4444", // rose
-            "Hiburan & Lainnya": "#8b5cf6" // violet
+            "Nabung / Investasi": "#10b981", 
+            "Gaji / Pendapatan Bersama": "#14b8a6", 
+            "Makanan & Minuman": "#f59e0b", 
+            "Transportasi": "#3b82f6", 
+            "Tagihan & Utilitas": "#ef4444", 
+            "Hiburan & Lainnya": "#8b5cf6" 
         };
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -410,7 +430,9 @@
             const todayStr = new Date().toISOString().split('T')[0];
             setFormattedDateValue(todayStr);
 
+            updateOwnerFilterOptions(); // Update opsi dropdown penabung
             renderTransactions();
+            
             if (googleScriptUrl) {
                 document.getElementById('scriptUrlInput').value = googleScriptUrl;
             }
@@ -420,7 +442,7 @@
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             applyTheme(currentTheme);
             localStorage.setItem('wesaves_theme', currentTheme);
-            renderTransactions(); // Refresh donat chart warna border tengah
+            renderTransactions(); 
         }
 
         function applyTheme(theme) {
@@ -512,6 +534,38 @@
             localStorage.setItem('wesaves_goal', savingsGoal);
             closeGoalModal();
             renderTransactions(); 
+        }
+
+        // FUNGSI FILTER DATA
+        function applyFilters() {
+            filterMonth = document.getElementById('filterMonth').value;
+            filterOwner = document.getElementById('filterOwner').value;
+            renderTransactions();
+        }
+
+        function updateOwnerFilterOptions() {
+            const filterSelect = document.getElementById('filterOwner');
+            const currentSelected = filterSelect.value;
+            
+            // Ambil nama penabung unik dari data transaksi
+            const owners = [...new Set(transactions.map(t => t.owner))].filter(Boolean);
+            
+            filterSelect.innerHTML = '<option value="all">Semua Penabung</option>';
+            owners.forEach(owner => {
+                const opt = document.createElement('option');
+                opt.value = owner;
+                opt.innerText = owner;
+                filterSelect.appendChild(opt);
+            });
+            
+            // Kembalikan seleksi sebelumnya jika masih ada di daftar
+            if(owners.includes(currentSelected)) {
+                filterSelect.value = currentSelected;
+                filterOwner = currentSelected;
+            } else {
+                filterSelect.value = 'all';
+                filterOwner = 'all';
+            }
         }
 
         function handleFormSubmit(e) {
@@ -633,6 +687,7 @@
 
         function saveAndRefresh() {
             localStorage.setItem('wesaves_tx', JSON.stringify(transactions));
+            updateOwnerFilterOptions(); // Perbarui jika ada nama baru
             renderTransactions();
         }
 
@@ -643,16 +698,46 @@
             const elTotalIncome = document.getElementById('totalIncome');
             const elTotalExpense = document.getElementById('totalExpense');
 
-            txCount.innerText = `${transactions.length} Transaksi`;
+            // 1. FILTERING DATA
+            let filteredTx = transactions.filter(t => {
+                let matchMonth = true;
+                let matchOwner = true;
+
+                // Cek Filter Penabung
+                if (filterOwner !== 'all') {
+                    matchOwner = t.owner === filterOwner;
+                }
+
+                // Cek Filter Waktu
+                if (filterMonth === 'current') {
+                    const txDate = new Date(t.rawDate || 0);
+                    const now = new Date();
+                    matchMonth = txDate.getMonth() === now.getMonth() && txDate.getFullYear() === now.getFullYear();
+                } else if (filterMonth === 'last') {
+                    const txDate = new Date(t.rawDate || 0);
+                    const now = new Date();
+                    let lastMonth = now.getMonth() - 1;
+                    let year = now.getFullYear();
+                    if (lastMonth < 0) {
+                        lastMonth = 11;
+                        year -= 1;
+                    }
+                    matchMonth = txDate.getMonth() === lastMonth && txDate.getFullYear() === year;
+                }
+
+                return matchMonth && matchOwner;
+            });
+
+            txCount.innerText = `${filteredTx.length} Transaksi`;
 
             let income = 0;
             let expense = 0;
 
-            if (transactions.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400 dark:text-slate-500">Belum ada catatan keuangan bersama. Yuk mulai menabung!</td></tr>`;
+            if (filteredTx.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-8 text-slate-400 dark:text-slate-500">Belum ada catatan pada filter ini.</td></tr>`;
             } else {
                 tbody.innerHTML = '';
-                transactions.forEach(t => {
+                filteredTx.forEach(t => {
                     if (t.type === 'INCOME') income += t.amount;
                     else expense += t.amount;
 
@@ -691,12 +776,17 @@
             elTotalIncome.innerText = `Rp ${income.toLocaleString('id-ID')}`;
             elTotalExpense.innerText = `Rp ${expense.toLocaleString('id-ID')}`;
 
-            updateGoalUI(balance); 
-            renderLineChart();
-            renderDonutChart(); // Render Grafik Kategori
+            // TARGET TABUNGAN selalu menggunakan ALL-TIME DATA agar progres tidak turun saat di-filter
+            let allTimeIncome = transactions.filter(t => t.type === 'INCOME').reduce((s, t) => s + t.amount, 0);
+            let allTimeExpense = transactions.filter(t => t.type === 'EXPENSE').reduce((s, t) => s + t.amount, 0);
+            updateGoalUI(allTimeIncome - allTimeExpense); 
+
+            // Grafik menggunakan data ter-filter
+            renderLineChart(filteredTx);
+            renderDonutChart(filteredTx); 
         }
 
-        function updateGoalUI(balance) {
+        function updateGoalUI(allTimeBalance) {
             const goalAmountDisplay = document.getElementById('goalAmountDisplay');
             const goalPercentageDisplay = document.getElementById('goalPercentageDisplay');
             const goalProgressBar = document.getElementById('goalProgressBar');
@@ -705,7 +795,7 @@
             goalAmountDisplay.innerText = `Rp ${savingsGoal.toLocaleString('id-ID')}`;
 
             if (savingsGoal > 0) {
-                let percentage = (balance / savingsGoal) * 100;
+                let percentage = (allTimeBalance / savingsGoal) * 100;
                 if (percentage < 0) percentage = 0;
                 
                 let displayPct = percentage > 100 ? 100 : percentage;
@@ -713,7 +803,7 @@
                 goalPercentageDisplay.innerText = `${percentage.toFixed(1)}%`;
                 goalProgressBar.style.width = `${displayPct}%`;
 
-                let remaining = savingsGoal - balance;
+                let remaining = savingsGoal - allTimeBalance;
                 if (remaining > 0) {
                     goalRemainingDisplay.innerHTML = `Kurang <span class="font-bold text-slate-700 dark:text-slate-200">Rp ${remaining.toLocaleString('id-ID')}</span> lagi untuk mencapai target di tahun 2028.`;
                 } else {
@@ -726,12 +816,12 @@
             }
         }
 
-        function renderLineChart() {
+        function renderLineChart(dataToRender) {
             const incomePolyline = document.getElementById('incomePolyline');
             const expensePolyline = document.getElementById('expensePolyline');
             const chartStatusText = document.getElementById('chartStatusText');
 
-            if (transactions.length < 2) {
+            if (dataToRender.length < 2) {
                 incomePolyline.setAttribute('points', '0,200 600,200');
                 expensePolyline.setAttribute('points', '0,200 600,200');
                 chartStatusText.style.display = 'block';
@@ -740,7 +830,7 @@
 
             chartStatusText.style.display = 'none';
 
-            let sorted = [...transactions].sort((a, b) => new Date(a.rawDate || 0) - new Date(b.rawDate || 0));
+            let sorted = [...dataToRender].sort((a, b) => new Date(a.rawDate || 0) - new Date(b.rawDate || 0));
             
             let maxVal = 1000;
             sorted.forEach(t => {
@@ -775,15 +865,14 @@
             }
         }
 
-        // FUNGSI BARU: RENDER GRAFIK DONAT KATEGORI
         function formatShortNumber(num) {
             if (num >= 1000000) return (num / 1000000).toFixed(1) + 'Jt';
             if (num >= 1000) return (num / 1000).toFixed(0) + 'Rb';
             return num.toString();
         }
 
-        function renderDonutChart() {
-            let expenseTx = transactions.filter(t => t.type === 'EXPENSE');
+        function renderDonutChart(dataToRender) {
+            let expenseTx = dataToRender.filter(t => t.type === 'EXPENSE');
             let totalExpense = expenseTx.reduce((sum, t) => sum + t.amount, 0);
 
             const donutContainer = document.getElementById('donutChart');
@@ -801,7 +890,6 @@
                 categorySums[t.category] = (categorySums[t.category] || 0) + t.amount;
             });
 
-            // Urutkan kategori dari yang pengeluarannya terbesar
             let sortedCategories = Object.keys(categorySums).sort((a, b) => categorySums[b] - categorySums[a]);
 
             let conicString = '';
@@ -811,7 +899,7 @@
             sortedCategories.forEach((cat, index) => {
                 let amount = categorySums[cat];
                 let percent = (amount / totalExpense) * 100;
-                let color = categoryColors[cat] || "#64748b"; // Warna default abu-abu jika tidak ditemukan
+                let color = categoryColors[cat] || "#64748b"; 
 
                 conicString += `${color} ${currentPercent}% ${currentPercent + percent}%`;
                 if (index < sortedCategories.length - 1) conicString += ', ';
@@ -832,7 +920,6 @@
                 `;
             });
 
-            // Update UI Donut
             donutContainer.style.background = `conic-gradient(${conicString})`;
             donutContainer.innerHTML = `<div class="w-24 h-24 sm:w-32 sm:h-32 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center shadow-inner text-center flex-col">
                 <span class="text-[10px] text-slate-500 uppercase font-semibold mb-0.5">Total</span>

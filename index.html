@@ -80,9 +80,9 @@
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
         
         <!-- ======================= -->
-        <!-- FITUR BARU: SAVINGS GOAL -->
+        <!-- FITUR SAVINGS GOAL -->
         <!-- ======================= -->
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden transition-colors duration-300">
+        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
             <div class="flex items-end justify-between mb-3">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-outfit mb-1 flex items-center">
@@ -98,18 +98,15 @@
                 </div>
             </div>
             
-            <!-- Progress Bar -->
             <div class="w-full bg-slate-100 dark:bg-slate-800 h-4 rounded-full overflow-hidden p-0.5 relative">
                 <div id="goalProgressBar" class="bg-emerald-500 h-full rounded-full transition-all duration-700 relative" style="width: 0%"></div>
             </div>
             
             <p id="goalRemainingDisplay" class="text-xs text-slate-500 dark:text-slate-400 mt-3 font-medium">Tetapkan target tabunganmu untuk melihat progres.</p>
         </div>
-        <!-- ======================= -->
 
         <!-- Summary Cards Grid -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- Total Saldo -->
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
                 <div class="flex items-center justify-between">
                     <div>
@@ -125,7 +122,6 @@
                 </div>
             </div>
 
-            <!-- Total Pemasukan -->
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
                 <div class="flex items-center justify-between">
                     <div>
@@ -139,7 +135,6 @@
                 <div class="mt-4 text-xs text-slate-500 dark:text-slate-400">Akumulasi seluruh pemasukan</div>
             </div>
 
-            <!-- Total Pengeluaran -->
             <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
                 <div class="flex items-center justify-between">
                     <div>
@@ -154,32 +149,61 @@
             </div>
         </div>
 
-        <!-- Grafik Garis (Line Chart Trend Cashflow) -->
-        <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                <h2 class="font-outfit text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center">
-                    <i class="fa-solid fa-chart-line text-emerald-600 mr-2"></i> Trend Grafik Cashflow
-                </h2>
-                <div class="flex items-center space-x-4 text-xs">
-                    <span class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span><span class="text-slate-600 dark:text-slate-300">Pemasukan</span></span>
-                    <span class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span><span class="text-slate-600 dark:text-slate-300">Pengeluaran</span></span>
+        <!-- ======================= -->
+        <!-- FITUR BARU: VISUALISASI KATEGORI -->
+        <!-- ======================= -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Grafik Garis (Line Chart Trend Cashflow) - 2 Kolom -->
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 lg:col-span-2">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <h2 class="font-outfit text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center">
+                        <i class="fa-solid fa-chart-line text-emerald-600 mr-2"></i> Trend Grafik Cashflow
+                    </h2>
+                    <div class="flex items-center space-x-4 text-xs">
+                        <span class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span><span class="text-slate-600 dark:text-slate-300">Pemasukan</span></span>
+                        <span class="flex items-center space-x-1.5"><span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span><span class="text-slate-600 dark:text-slate-300">Pengeluaran</span></span>
+                    </div>
+                </div>
+                
+                <div class="w-full h-56 relative flex items-center justify-center pt-4">
+                    <svg id="trendLineChart" class="w-full h-full overflow-visible" viewBox="0 0 600 200" preserveAspectRatio="none">
+                        <line x1="0" y1="0" x2="600" y2="0" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
+                        <line x1="0" y1="50" x2="600" y2="50" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
+                        <line x1="0" y1="100" x2="600" y2="100" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
+                        <line x1="0" y1="150" x2="600" y2="150" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
+                        <line x1="0" y1="200" x2="600" y2="200" stroke="currentColor" class="text-slate-200 dark:text-slate-800"/>
+                        
+                        <polyline id="incomePolyline" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0,200 600,200"/>
+                        <polyline id="expensePolyline" fill="none" stroke="#f43f5e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0,200 600,200"/>
+                    </svg>
+                </div>
+                <p id="chartStatusText" class="text-center text-xs text-slate-400 dark:text-slate-500 italic">Belum cukup data transaksi untuk menampilkan garis tren.</p>
+            </div>
+
+            <!-- Grafik Donat (Kategori Pengeluaran) - 1 Kolom -->
+            <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4 lg:col-span-1 flex flex-col">
+                <div class="flex items-center justify-between mb-2">
+                    <h2 class="font-outfit text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center">
+                        <i class="fa-solid fa-chart-pie text-emerald-600 mr-2"></i> Porsi Pengeluaran
+                    </h2>
+                </div>
+                
+                <div class="flex-grow flex flex-col items-center justify-center">
+                    <div id="donutChart" class="w-32 h-32 sm:w-40 sm:h-40 rounded-full flex items-center justify-center transition-all duration-500" style="background: #e2e8f0;">
+                        <div id="donutInner" class="w-24 h-24 sm:w-32 sm:h-32 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center shadow-inner flex-col text-center">
+                            <span class="text-xs text-slate-400">Belum ada</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="donutLegend" class="mt-2 pt-4 border-t border-slate-100 dark:border-slate-800 w-full space-y-2">
+                    <p class="text-xs text-center text-slate-400 italic">Belum ada data pengeluaran.</p>
                 </div>
             </div>
-            
-            <div class="w-full h-56 relative flex items-center justify-center pt-4">
-                <svg id="trendLineChart" class="w-full h-full overflow-visible" viewBox="0 0 600 200" preserveAspectRatio="none">
-                    <line x1="0" y1="0" x2="600" y2="0" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
-                    <line x1="0" y1="50" x2="600" y2="50" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
-                    <line x1="0" y1="100" x2="600" y2="100" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
-                    <line x1="0" y1="150" x2="600" y2="150" stroke="currentColor" class="text-slate-200 dark:text-slate-800" stroke-dasharray="4"/>
-                    <line x1="0" y1="200" x2="600" y2="200" stroke="currentColor" class="text-slate-200 dark:text-slate-800"/>
-                    
-                    <polyline id="incomePolyline" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0,200 600,200"/>
-                    <polyline id="expensePolyline" fill="none" stroke="#f43f5e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" points="0,200 600,200"/>
-                </svg>
-            </div>
-            <p id="chartStatusText" class="text-center text-xs text-slate-400 dark:text-slate-500 italic">Belum cukup data transaksi untuk menampilkan garis tren.</p>
+
         </div>
+        <!-- ======================= -->
 
         <!-- Action Grid & Form Panel -->
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -367,8 +391,18 @@
         let transactions = JSON.parse(localStorage.getItem('wesaves_tx')) || [];
         let googleScriptUrl = localStorage.getItem('wesaves_script_url') || '';
         let currentTheme = localStorage.getItem('wesaves_theme') || 'light';
-        let savingsGoal = parseFloat(localStorage.getItem('wesaves_goal')) || 0; // State Target Tabungan
+        let savingsGoal = parseFloat(localStorage.getItem('wesaves_goal')) || 0;
         let editingId = null; 
+
+        // Kumpulan warna untuk grafik kategori
+        const categoryColors = {
+            "Nabung / Investasi": "#10b981", // emerald
+            "Gaji / Pendapatan Bersama": "#14b8a6", // teal
+            "Makanan & Minuman": "#f59e0b", // amber
+            "Transportasi": "#3b82f6", // blue
+            "Tagihan & Utilitas": "#ef4444", // rose
+            "Hiburan & Lainnya": "#8b5cf6" // violet
+        };
 
         document.addEventListener('DOMContentLoaded', () => {
             applyTheme(currentTheme);
@@ -386,6 +420,7 @@
             currentTheme = currentTheme === 'light' ? 'dark' : 'light';
             applyTheme(currentTheme);
             localStorage.setItem('wesaves_theme', currentTheme);
+            renderTransactions(); // Refresh donat chart warna border tengah
         }
 
         function applyTheme(theme) {
@@ -461,7 +496,6 @@
             document.getElementById('selectedDateDisplay').innerText = dateObj.toLocaleDateString('id-ID', options);
         }
 
-        // FUNGSI UNTUK MENGATUR GOAL TABUNGAN
         function openGoalModal() {
             document.getElementById('goalInput').value = savingsGoal > 0 ? savingsGoal : '';
             formatRupiahInput(document.getElementById('goalInput'));
@@ -477,7 +511,7 @@
             savingsGoal = parseFloat(rawGoal) || 0;
             localStorage.setItem('wesaves_goal', savingsGoal);
             closeGoalModal();
-            renderTransactions(); // Render ulang UI agar bar goal terupdate
+            renderTransactions(); 
         }
 
         function handleFormSubmit(e) {
@@ -657,11 +691,11 @@
             elTotalIncome.innerText = `Rp ${income.toLocaleString('id-ID')}`;
             elTotalExpense.innerText = `Rp ${expense.toLocaleString('id-ID')}`;
 
+            updateGoalUI(balance); 
             renderLineChart();
-            updateGoalUI(balance); // Panggil fungsi pembaruan UI Goal
+            renderDonutChart(); // Render Grafik Kategori
         }
 
-        // FUNGSI UPDATE UI SAVINGS GOAL
         function updateGoalUI(balance) {
             const goalAmountDisplay = document.getElementById('goalAmountDisplay');
             const goalPercentageDisplay = document.getElementById('goalPercentageDisplay');
@@ -739,6 +773,73 @@
             } else {
                 expensePolyline.setAttribute('points', '0,200 600,200');
             }
+        }
+
+        // FUNGSI BARU: RENDER GRAFIK DONAT KATEGORI
+        function formatShortNumber(num) {
+            if (num >= 1000000) return (num / 1000000).toFixed(1) + 'Jt';
+            if (num >= 1000) return (num / 1000).toFixed(0) + 'Rb';
+            return num.toString();
+        }
+
+        function renderDonutChart() {
+            let expenseTx = transactions.filter(t => t.type === 'EXPENSE');
+            let totalExpense = expenseTx.reduce((sum, t) => sum + t.amount, 0);
+
+            const donutContainer = document.getElementById('donutChart');
+            const donutLegend = document.getElementById('donutLegend');
+
+            if (totalExpense === 0) {
+                donutContainer.style.background = currentTheme === 'dark' ? '#1e293b' : '#e2e8f0';
+                donutContainer.innerHTML = `<div class="w-24 h-24 sm:w-32 sm:h-32 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center shadow-inner flex-col text-center"><span class="text-xs text-slate-400">Belum ada</span></div>`;
+                donutLegend.innerHTML = '<p class="text-xs text-center text-slate-400 italic">Belum ada data pengeluaran.</p>';
+                return;
+            }
+
+            let categorySums = {};
+            expenseTx.forEach(t => {
+                categorySums[t.category] = (categorySums[t.category] || 0) + t.amount;
+            });
+
+            // Urutkan kategori dari yang pengeluarannya terbesar
+            let sortedCategories = Object.keys(categorySums).sort((a, b) => categorySums[b] - categorySums[a]);
+
+            let conicString = '';
+            let currentPercent = 0;
+            let legendHTML = '';
+
+            sortedCategories.forEach((cat, index) => {
+                let amount = categorySums[cat];
+                let percent = (amount / totalExpense) * 100;
+                let color = categoryColors[cat] || "#64748b"; // Warna default abu-abu jika tidak ditemukan
+
+                conicString += `${color} ${currentPercent}% ${currentPercent + percent}%`;
+                if (index < sortedCategories.length - 1) conicString += ', ';
+
+                currentPercent += percent;
+
+                legendHTML += `
+                    <div class="flex items-center justify-between text-xs mb-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="w-3 h-3 rounded-full shrink-0" style="background-color: ${color}"></span>
+                            <span class="text-slate-600 dark:text-slate-300 truncate w-32 sm:w-auto" title="${cat}">${cat}</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="text-slate-400">Rp ${formatShortNumber(amount)}</span>
+                            <span class="font-semibold text-slate-800 dark:text-slate-200 w-8 text-right">${percent.toFixed(0)}%</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Update UI Donut
+            donutContainer.style.background = `conic-gradient(${conicString})`;
+            donutContainer.innerHTML = `<div class="w-24 h-24 sm:w-32 sm:h-32 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center shadow-inner text-center flex-col">
+                <span class="text-[10px] text-slate-500 uppercase font-semibold mb-0.5">Total</span>
+                <span class="text-sm font-bold text-rose-600 dark:text-rose-400 font-outfit truncate w-20 sm:w-24" title="Rp ${totalExpense.toLocaleString('id-ID')}">${formatShortNumber(totalExpense)}</span>
+            </div>`;
+            
+            donutLegend.innerHTML = legendHTML;
         }
 
         function openSyncModal() {

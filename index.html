@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -60,19 +60,14 @@
             </div>
 
             <div class="flex items-center space-x-2 shrink-0">
-                <!-- Tombol Buka Spreadsheet Langsung -->
                 <a href="https://docs.google.com/spreadsheets/d/1dvS_pNOD8r9dijxBsEqJfH1-H3mYm48VtssncO2bsBM/edit" target="_blank" title="Buka Google Sheet" class="inline-flex items-center justify-center space-x-2 text-xs font-medium bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-950/50 dark:text-blue-400 dark:hover:bg-blue-900/50 w-9 h-9 sm:w-auto sm:px-3.5 sm:py-2 rounded-xl transition border border-blue-200 dark:border-blue-800">
                     <i class="fa-solid fa-table-list text-sm sm:text-base pointer-events-none"></i>
                     <span class="hidden sm:inline pointer-events-none">Buka Sheet</span>
                 </a>
-
-                <!-- Tombol Sinkronisasi Google Drive API -->
-                <button type="button" onclick="openSyncModal()" title="Pengaturan API Google Sheet" class="inline-flex items-center justify-center space-x-2 text-xs font-medium bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-400 dark:hover:bg-emerald-900/50 w-9 h-9 sm:w-auto sm:px-3.5 sm:py-2 rounded-xl transition border border-emerald-200 dark:border-emerald-800">
+                <button type="button" onclick="openSyncModal()" title="Sinkronisasi Google Drive" class="inline-flex items-center justify-center space-x-2 text-xs font-medium bg-emerald-50 text-emerald-600 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:text-emerald-400 dark:hover:bg-emerald-900/50 w-9 h-9 sm:w-auto sm:px-3.5 sm:py-2 rounded-xl transition border border-emerald-200 dark:border-emerald-800">
                     <i class="fa-brands fa-google-drive text-sm sm:text-base pointer-events-none"></i>
                     <span class="hidden sm:inline pointer-events-none">Setup API</span>
                 </button>
-
-                <!-- Tombol Ganti Mode (Terang / Gelap) -->
                 <button type="button" id="themeToggleBtn" onclick="toggleTheme()" title="Ganti Tema" class="w-9 h-9 sm:w-auto sm:px-3.5 sm:py-2 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-medium flex items-center justify-center sm:space-x-2 transition hover:bg-slate-50 dark:hover:bg-slate-700">
                     <i id="themeIcon" class="fa-solid fa-moon text-sm sm:text-base pointer-events-none"></i>
                     <span id="themeText" class="hidden sm:inline pointer-events-none">Mode Gelap</span>
@@ -460,17 +455,27 @@
             };
 
             if (editingId) {
+                // EDIT DATA
                 newTx.id = editingId;
                 const index = transactions.findIndex(t => t.id === editingId);
                 if (index !== -1) {
                     transactions[index] = newTx;
                 }
                 cancelEdit();
+                
+                // Kirim sinyal update ke Google Sheets
+                if (googleScriptUrl) {
+                    newTx.action = 'edit';
+                    syncToGoogleSheet(newTx);
+                }
             } else {
+                // TAMBAH DATA
                 newTx.id = Date.now();
                 transactions.unshift(newTx);
                 
+                // Kirim sinyal tambah ke Google Sheets
                 if (googleScriptUrl) {
+                    newTx.action = 'add';
                     syncToGoogleSheet(newTx);
                 }
                 resetForm();
@@ -524,6 +529,11 @@
                 transactions = transactions.filter(t => t.id !== id);
                 if (editingId === id) cancelEdit(); 
                 saveAndRefresh();
+                
+                // Kirim sinyal hapus ke Google Sheets
+                if (googleScriptUrl) {
+                    syncToGoogleSheet({ id: id, action: 'delete' });
+                }
             }
         }
 
@@ -662,7 +672,7 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(tx)
             }).then(() => {
-                console.log('Disinkronkan ke Google Sheet');
+                console.log('Sinkronisasi ke Google Sheet Berhasil: ', tx.action);
             }).catch(err => {
                 console.error('Gagal sinkronisasi:', err);
             });

@@ -384,7 +384,7 @@
             <h3 class="font-outfit font-bold"><i class="fa-brands fa-google-drive text-emerald-600 mr-2"></i> Setup API</h3>
             <input type="text" id="scriptUrlInput" placeholder="URL Web App Google Script..." class="w-full text-sm px-4 py-3 rounded-xl border border-slate-300 dark:bg-slate-800">
             <div class="flex space-x-3 pt-2">
-                <button type="button" onclick="saveScriptUrl()" class="flex-grow bg-emerald-600 text-white py-2.5 rounded-xl">Simpan API</button>
+                <button type="button" onclick="saveScriptUrl()" class="flex-grow bg-emerald-600 text-white py-2.5 rounded-xl">Simpan & Sinkronkan</button>
                 <button type="button" onclick="document.getElementById('syncModal').style.display='none'" class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700">Batal</button>
             </div>
         </div>
@@ -397,7 +397,10 @@
 
     <!-- JAVASCRIPT UTAMA -->
     <script>
-        // DATA DEFAULT DITANAM PERMANEN DI SINI (Data 13 Transaksimu kembali utuh!)
+        // OPSIONAL: Tempel URL Web App Google Script kamu di dalam tanda kutip di bawah ini
+        // supaya HP dan Laptop otomatis terhubung tanpa perlu input URL manual lagi:
+        const DEFAULT_SCRIPT_URL = "";
+
         const defaultData = [
             {id: 1792974158595, rawDate: "2026-10-05", dateTime: "Senin, 5 Okt 2026, 07:22 WIB", owner: "Faari", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 150000, category: "Nabung / Investasi", type: "INCOME"},
             {id: 1792974136146, rawDate: "2026-09-25", dateTime: "Jumat, 25 Sep 2026, 07:22 WIB", owner: "Michelle", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 150000, category: "Nabung / Investasi", type: "INCOME"},
@@ -414,8 +417,46 @@
             {id: 1792973810566, rawDate: "2026-01-11", dateTime: "Minggu, 11 Jan 2026, 07:16 WIB", owner: "Faari", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 500000, category: "Nabung / Investasi", type: "INCOME"}
         ];
 
+        // Normalisasi agar data dari Sheet (termasuk ketikan manual) selalu valid
+        function normalizeTransactions(arr) {
+            if (!Array.isArray(arr)) return [];
+            return arr.map((item, idx) => {
+                let rawAmt = item.amount;
+                let parsedAmt = typeof rawAmt === 'number' ? rawAmt : parseFloat(String(rawAmt || '0').replace(/[^0-9-]/g, '')) || 0;
+
+                let rawType = String(item.type || 'INCOME').toUpperCase().trim();
+                if (rawType === 'PEMASUKAN' || rawType === 'MASUK') rawType = 'INCOME';
+                else if (rawType === 'PENGELUARAN' || rawType === 'KELUAR') rawType = 'EXPENSE';
+                else if (rawType === 'MUTASI') rawType = 'TRANSFER';
+
+                let desc = String(item.description || 'Tabungan').trim();
+                let tgt = item.targetBank || null;
+                if (rawType === 'TRANSFER' && !tgt && desc.includes('[Ke: ')) {
+                    let match = desc.match(/\[Ke:\s*(.*?)\]\s*(.*)/);
+                    if (match) { tgt = match[1]; desc = match[2]; }
+                }
+
+                let rDate = String(item.rawDate || '').trim();
+                if (rDate.includes('T')) rDate = rDate.split('T')[0];
+                if (!rDate) rDate = new Date().toISOString().split('T')[0];
+
+                return {
+                    id: Number(String(item.id || '').replace(/[^0-9]/g, '')) || (1700000000000 + idx),
+                    rawDate: rDate,
+                    dateTime: String(item.dateTime || rDate),
+                    owner: String(item.owner || 'Faari').trim(),
+                    bank: String(item.bank || 'SeaBank').trim(),
+                    targetBank: tgt,
+                    description: desc,
+                    amount: parsedAmt,
+                    category: String(item.category || 'Nabung / Investasi').trim(),
+                    type: rawType
+                };
+            }).filter(t => t.amount > 0);
+        }
+
         let savedTx = JSON.parse(localStorage.getItem('wesaves_tx'));
-        let transactions = (savedTx && savedTx.length > 0) ? savedTx : defaultData;
+        let transactions = (savedTx && savedTx.length > 0) ? normalizeTransactions(savedTx) : defaultData;
         if (transactions.length === 0) transactions = defaultData;
         localStorage.setItem('wesaves_tx', JSON.stringify(transactions)); 
 
@@ -423,7 +464,7 @@
         let bankList = JSON.parse(localStorage.getItem('wesaves_banks')) || ['SeaBank', 'BCA'];
         let categoryList = JSON.parse(localStorage.getItem('wesaves_categories')) || ['Nabung / Investasi', 'Gaji / Pendapatan Bersama', 'Makanan & Minuman', 'Transportasi', 'Tagihan & Utilitas', 'Hiburan & Lainnya'];
         let currentType = 'INCOME';
-        let googleScriptUrl = localStorage.getItem('wesaves_script_url') || '';
+        let googleScriptUrl = localStorage.getItem('wesaves_script_url') || DEFAULT_SCRIPT_URL;
         let currentTheme = localStorage.getItem('wesaves_theme') || 'dark';
         let savingsGoal = parseFloat(localStorage.getItem('wesaves_goal')) || 0;
         let monthlyBudget = parseFloat(localStorage.getItem('wesaves_budget')) || 0;
@@ -444,12 +485,49 @@
         function getCatUI(catName, index = 0) { return categoryUI[catName] || { color: defaultColors[index % defaultColors.length], icon: "fa-tag" }; }
         function formatShortNumber(num) { if (num >= 1000000) return (num / 1000000).toFixed(1) + ' Jt'; if (num >= 1000) return (num / 1000).toFixed(0) + ' Rb'; return num.toString(); }
 
+        // SINKRONISASI DUA ARAH (GET & POST KE GOOGLE SHEET)
+        function syncToGoogleSheet(txPayload) {
+            if (!googleScriptUrl) return;
+            fetch(googleScriptUrl, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify(txPayload)
+            }).catch(err => console.error('Gagal kirim ke Sheet:', err));
+        }
+
+        async function loadFromGoogleSheet(showNotification = false) {
+            if (!googleScriptUrl) return;
+            try {
+                const sep = googleScriptUrl.includes('?') ? '&' : '?';
+                const res = await fetch(`${googleScriptUrl}${sep}t=${Date.now()}`, { method: 'GET', redirect: 'follow' });
+                const data = await res.json();
+                if (Array.isArray(data) && data.length > 0) {
+                    transactions = normalizeTransactions(data);
+                    transactions.sort((a, b) => new Date(b.rawDate || 0) - new Date(a.rawDate || 0) || b.id - a.id);
+                    localStorage.setItem('wesaves_tx', JSON.stringify(transactions));
+                    updateOwnerFilterOptions();
+                    renderTransactions();
+                    if (showNotification) alert(`Berhasil menyinkronkan ${transactions.length} transaksi dari Google Sheet!`);
+                }
+            } catch (err) {
+                console.error('Gagal menarik data dari Sheet:', err);
+                if (showNotification) alert('Gagal membaca Google Sheet. Pastikan kode doGet() sudah di-Deploy sebagai Versi Baru dan akses disetel ke "Siapa saja (Anyone)".');
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('wesaves_unlocked') === 'true') document.getElementById('loginScreen').style.display = 'none';
             applyTheme(currentTheme); renderFormDropdowns();
             setFormattedDateValue(new Date().toISOString().split('T')[0]);
-            updateOwnerFilterOptions(); transactions.sort((a,b) => b.id - a.id); renderTransactions();
-            if (googleScriptUrl) document.getElementById('scriptUrlInput').value = googleScriptUrl;
+            updateOwnerFilterOptions();
+            transactions.sort((a, b) => new Date(b.rawDate || 0) - new Date(a.rawDate || 0) || b.id - a.id);
+            renderTransactions();
+            if (googleScriptUrl) {
+                document.getElementById('scriptUrlInput').value = googleScriptUrl;
+                // Otomatis tarik data terbaru dari Google Sheet setiap kali halaman dibuka di HP / Laptop
+                loadFromGoogleSheet(false);
+            }
         });
 
         function toggleTheme() { currentTheme = currentTheme === 'light' ? 'dark' : 'light'; applyTheme(currentTheme); localStorage.setItem('wesaves_theme', currentTheme); renderTransactions(); }
@@ -485,7 +563,16 @@
         function openBudgetModal() { document.getElementById('budgetInput').value = monthlyBudget||''; formatRupiahInput(document.getElementById('budgetInput')); document.getElementById('budgetModal').style.display='flex'; }
         function saveBudget() { monthlyBudget = parseFloat(document.getElementById('budgetInput').value.replace(/\./g,''))||0; localStorage.setItem('wesaves_budget', monthlyBudget); document.getElementById('budgetModal').style.display='none'; renderTransactions(); }
         function openSyncModal() { document.getElementById('syncModal').style.display='flex'; }
-        function saveScriptUrl() { googleScriptUrl = document.getElementById('scriptUrlInput').value.trim(); localStorage.setItem('wesaves_script_url', googleScriptUrl); document.getElementById('syncModal').style.display='none'; alert('Tersimpan!'); }
+        function saveScriptUrl() {
+            googleScriptUrl = document.getElementById('scriptUrlInput').value.trim();
+            localStorage.setItem('wesaves_script_url', googleScriptUrl);
+            document.getElementById('syncModal').style.display='none';
+            if (googleScriptUrl) {
+                loadFromGoogleSheet(true);
+            } else {
+                alert('URL API dihapus.');
+            }
+        }
         function openDateModal() { document.getElementById('modalDateInput').value = document.getElementById('txDateValue').value; document.getElementById('dateModal').style.display='flex'; }
         function confirmDateSelection() { setFormattedDateValue(document.getElementById('modalDateInput').value); document.getElementById('dateModal').style.display='none'; }
 
@@ -537,9 +624,13 @@
 
             if(editingId) {
                 const i = transactions.findIndex(t=>t.id===editingId); if(i !== -1) transactions[i] = newTx; cancelEdit();
+                sheetTx.action = 'edit';
+                syncToGoogleSheet(sheetTx);
             } else {
                 transactions.unshift(newTx);
                 resetForm();
+                sheetTx.action = 'add';
+                syncToGoogleSheet(sheetTx);
             }
             saveAndRefresh();
         }
@@ -565,8 +656,21 @@
             document.getElementById('cancelEditBtn').classList.add('hidden'); resetForm();
         }
         function resetForm() { document.getElementById('txDesc').value=''; document.getElementById('txAmount').value=''; setFormattedDateValue(new Date().toISOString().split('T')[0]); setTxType('INCOME'); }
-        function deleteTransaction(id) { if(confirm("Yakin hapus?")) { transactions=transactions.filter(t=>t.id!==id); if(editingId===id)cancelEdit(); saveAndRefresh(); } }
-        function saveAndRefresh() { transactions.sort((a,b)=>b.id-a.id); localStorage.setItem('wesaves_tx', JSON.stringify(transactions)); updateOwnerFilterOptions(); currentPage=1; renderTransactions(); }
+        function deleteTransaction(id) {
+            if(confirm("Yakin hapus?")) {
+                transactions=transactions.filter(t=>t.id!==id);
+                if(editingId===id) cancelEdit();
+                saveAndRefresh();
+                syncToGoogleSheet({ id: id, action: 'delete' });
+            }
+        }
+        function saveAndRefresh() {
+            transactions.sort((a, b) => new Date(b.rawDate || 0) - new Date(a.rawDate || 0) || b.id - a.id);
+            localStorage.setItem('wesaves_tx', JSON.stringify(transactions));
+            updateOwnerFilterOptions();
+            currentPage=1;
+            renderTransactions();
+        }
         function handleSearch() { searchQuery = document.getElementById('searchInput').value.toLowerCase().trim(); currentPage = 1; renderTransactions(); }
         function applyFilters() { filterMonth = document.getElementById('filterMonth').value; filterOwner = document.getElementById('filterOwner').value; currentPage = 1; renderTransactions(); }
         function changePage(s) { currentPage+=s; renderTransactions(); }
@@ -585,7 +689,7 @@
                     if(type === 'TRANSFER' && desc.includes('[Ke: ')) { let match = desc.match(/\[Ke:\s*(.*?)\]\s*(.*)/); if(match) { tgt = match[1]; desc = match[2]; } }
                     if(c.length>=9) nt.push({id:parseInt(c[0])||Date.now()+i, rawDate:c[1], dateTime:c[2], owner:c[3].trim(), bank:c[4].trim(), targetBank:tgt, description:desc, amount:parseFloat(c[6])||0, category:c[7].trim(), type:type});
                 }
-                if(nt.length>0 && confirm(`Pulihkan ${nt.length} data?`)) { transactions=nt; saveAndRefresh(); closeSettingsModal(); }
+                if(nt.length>0 && confirm(`Pulihkan ${nt.length} data?`)) { transactions=normalizeTransactions(nt); saveAndRefresh(); closeSettingsModal(); }
             }; r.readAsText(f); e.target.value='';
         }
         function exportDataToCSV() {

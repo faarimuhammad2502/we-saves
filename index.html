@@ -399,7 +399,7 @@
     <script>
         // OPSIONAL: Tempel URL Web App Google Script kamu di dalam tanda kutip di bawah ini
         // supaya HP dan Laptop otomatis terhubung tanpa perlu input URL manual lagi:
-        const DEFAULT_SCRIPT_URL = "";
+        const DEFAULT_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby3wX-NC6OtNGwZW0x41s3CI7edT2ja8vYfjR_6iGjC0_VUykAJl8zdunsolkeQBXPaJQ/exec";
 
         const defaultData = [
             {id: 1792974158595, rawDate: "2026-10-05", dateTime: "Senin, 5 Okt 2026, 07:22 WIB", owner: "Faari", bank: "SeaBank", targetBank: null, description: "Nabung Nikah", amount: 150000, category: "Nabung / Investasi", type: "INCOME"},
@@ -464,7 +464,7 @@
         let bankList = JSON.parse(localStorage.getItem('wesaves_banks')) || ['SeaBank', 'BCA'];
         let categoryList = JSON.parse(localStorage.getItem('wesaves_categories')) || ['Nabung / Investasi', 'Gaji / Pendapatan Bersama', 'Makanan & Minuman', 'Transportasi', 'Tagihan & Utilitas', 'Hiburan & Lainnya'];
         let currentType = 'INCOME';
-        let googleScriptUrl = localStorage.getItem('wesaves_script_url') || DEFAULT_SCRIPT_URL;
+        let googleScriptUrl = DEFAULT_SCRIPT_URL || localStorage.getItem('wesaves_script_url') || '';
         let currentTheme = localStorage.getItem('wesaves_theme') || 'dark';
         let savingsGoal = parseFloat(localStorage.getItem('wesaves_goal')) || 0;
         let monthlyBudget = parseFloat(localStorage.getItem('wesaves_budget')) || 0;
@@ -496,25 +496,21 @@
             }).catch(err => console.error('Gagal kirim ke Sheet:', err));
         }
 
-        async function loadFromGoogleSheet(showNotification = false) {
-            if (!googleScriptUrl) return;
-            try {
-                const sep = googleScriptUrl.includes('?') ? '&' : '?';
-                const res = await fetch(`${googleScriptUrl}${sep}t=${Date.now()}`, { method: 'GET', redirect: 'follow' });
-                const data = await res.json();
-                if (Array.isArray(data) && data.length > 0) {
-                    transactions = normalizeTransactions(data);
-                    transactions.sort((a, b) => new Date(b.rawDate || 0) - new Date(a.rawDate || 0) || b.id - a.id);
-                    localStorage.setItem('wesaves_tx', JSON.stringify(transactions));
-                    updateOwnerFilterOptions();
-                    renderTransactions();
-                    if (showNotification) alert(`Berhasil menyinkronkan ${transactions.length} transaksi dari Google Sheet!`);
-                }
-            } catch (err) {
-                console.error('Gagal menarik data dari Sheet:', err);
-                if (showNotification) alert('Gagal membaca Google Sheet. Pastikan kode doGet() sudah di-Deploy sebagai Versi Baru dan akses disetel ke "Siapa saja (Anyone)".');
-            }
-        }
+async function syncToGoogleSheet(txPayload) {
+    if (!googleScriptUrl) {
+        alert("URL API Google Sheet belum terpasang! Klik tombol API di atas untuk memasukkan URL.");
+        return;
+    }
+    try {
+        const sep = googleScriptUrl.includes('?') ? '&' : '?';
+        const url = `${googleScriptUrl}${sep}payload=${encodeURIComponent(JSON.stringify(txPayload))}&t=${Date.now()}`;
+        await fetch(url, { method: 'GET', mode: 'no-cors' });
+        // Tarik ulang data terbaru dari Sheet 1.5 detik setelah simpan
+        setTimeout(() => loadFromGoogleSheet(false), 1500);
+    } catch (err) {
+        console.error('Gagal kirim ke Sheet:', err);
+    }
+}
 
         document.addEventListener('DOMContentLoaded', () => {
             if (sessionStorage.getItem('wesaves_unlocked') === 'true') document.getElementById('loginScreen').style.display = 'none';
